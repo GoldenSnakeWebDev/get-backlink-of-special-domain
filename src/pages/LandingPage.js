@@ -18,7 +18,10 @@ function LandingPage () {
             axios({
                 method: "post",
                 url: `http://localhost:5131/api/Links`,
-                data:{'domain':text_userInput}
+                data:{'domain':text_userInput},
+                headers: {
+                  "Content-Type": "application/json",
+                }
               })
               .then((response) => {
                 

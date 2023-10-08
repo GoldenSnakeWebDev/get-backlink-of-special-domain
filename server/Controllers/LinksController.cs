@@ -6,6 +6,7 @@ using HtmlAgilityPack;
 using System.Net;
 using System;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 public class LinkCrawler
 {
@@ -33,12 +34,24 @@ public class LinkCrawler
 [Route("api/[controller]")]
 public class LinksController : ControllerBase
 {
+
+    public class ParamsModel {
+        public string? Param {get; set;}
+    }
+
     [HttpPost]
-    public IActionResult Post([FromBody] dynamic data)
+    public IActionResult Post([FromBody] dynamic input)
     {
         // LinkCrawler crawler = new LinkCrawler();
 
-        Console.WriteLine($"domain>>>, {data}");
+        Console.WriteLine("start>>>>");
+
+        JsonDocument  jsonDoc = JsonDocument.Parse(input.ToString());
+
+        JsonElement domainElement = jsonDoc.RootElement.GetProperty("domain");
+        
+        string? domain = domainElement.ValueKind != JsonValueKind.Undefined ? domainElement.GetString():null;
+        Console.WriteLine($"domain>>>, {domain}");
 
         // List<string> links = crawler.CrawlLinks(data.domain.ToString());
 
