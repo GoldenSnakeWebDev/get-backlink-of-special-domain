@@ -42,7 +42,7 @@ public class LinksController : ControllerBase
     [HttpPost]
     public IActionResult Post([FromBody] dynamic input)
     {
-        // LinkCrawler crawler = new LinkCrawler();
+        LinkCrawler crawler = new LinkCrawler();
 
         Console.WriteLine("start>>>>");
 
@@ -53,10 +53,12 @@ public class LinksController : ControllerBase
         string? domain = domainElement.ValueKind != JsonValueKind.Undefined ? domainElement.GetString():null;
         Console.WriteLine($"domain>>>, {domain}");
 
-        // List<string> links = crawler.CrawlLinks(data.domain.ToString());
+        List<string> links = crawler.CrawlLinks(domain ?? "");
 
-        // return Ok(links);
-        return Ok();
+        Console.WriteLine($"backlinks>>>>>  {links}");
+        
+        return Ok(links);
+        // return Ok();
     }
 }
 
