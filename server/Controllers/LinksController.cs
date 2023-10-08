@@ -58,6 +58,13 @@ public class BacklinkRetriever
 public class LinksController : ControllerBase
 {
 
+    private readonly MySqlConnection _connection;
+
+    public YourController(MySqlConnection connection)
+    {
+        _connection = connection;
+    }
+
     public class ParamsModel {
         public string? Param {get; set;}
     }
@@ -86,6 +93,17 @@ public class LinksController : ControllerBase
         
         return Ok(links);
         // return Ok();
+    }
+
+    public void save_Backlink(List<string> links, string domain) {
+        await _connection.OpenAsync();
+
+        for (link in lins) {
+
+            using var cmd = new MySqlCommand($"INSERT INTO backlinks VALUES({domain}, )", _connection);
+        }
+
+
     }
 }
 
