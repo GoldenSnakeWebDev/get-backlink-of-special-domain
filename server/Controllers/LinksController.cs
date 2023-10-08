@@ -1,8 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
+namespace server.Controllers;
 
 // LinkCrawler.cs
 using HtmlAgilityPack;
 using System.Net;
+using System;
+using System.Text.Json;
 
 public class LinkCrawler
 {
@@ -26,19 +29,21 @@ public class LinkCrawler
 }
 
 // LinksController.cs
-
 [ApiController]
-[Route("api/get_Backlinks")]
+[Route("api/[controller]")]
 public class LinksController : ControllerBase
 {
-    [HttpGet("{domain}")]
-    public IActionResult GetLinks(string domain)
+    [HttpPost]
+    public IActionResult Post([FromBody] dynamic data)
     {
-        LinkCrawler crawler = new LinkCrawler();
+        // LinkCrawler crawler = new LinkCrawler();
 
-        List<string> links = crawler.CrawlLinks(domain);
+        Console.WriteLine($"domain>>>, {data}");
 
-        return Ok(links);
+        // List<string> links = crawler.CrawlLinks(data.domain.ToString());
+
+        // return Ok(links);
+        return Ok();
     }
 }
 

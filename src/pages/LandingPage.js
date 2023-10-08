@@ -17,8 +17,8 @@ function LandingPage () {
         try {
             axios({
                 method: "post",
-                url: `http://localhost:5131/api/get_Backlinks`,
-                data: {'text':text_userInput},
+                url: `http://localhost:5131/api/Links`,
+                data:{'domain':text_userInput}
               })
               .then((response) => {
                 
