@@ -26,6 +26,8 @@ function LandingPage () {
               .then((response) => {
                 
                 console.log('response>>>>>', response.data);
+
+                console.log("first url>>>>>", response.data[1]);
                 
               }).catch((error) => {
                 if (error.response) {

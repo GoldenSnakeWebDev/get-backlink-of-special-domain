@@ -29,6 +29,29 @@ public class LinkCrawler
     }
 }
 
+public class BacklinkRetriever
+{
+    private static readonly HttpClient client = new HttpClient();
+
+    public async Task<string> GetBacklinks(string domain)
+    {
+        string url = $"https://api.ahrefs.com/v1/backlinks?target={domain}&output=json&limit=100";
+        
+        HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, url);
+        HttpResponseMessage response = await client.SendAsync(request);
+
+        if (response.IsSuccessStatusCode)
+        {
+            string responseBody = await response.Content.ReadAsStringAsync();
+            return responseBody;
+        }
+        else
+        {
+            throw new Exception($"Failed to retrieve backlinks. StatusCode: {response.StatusCode}");
+        }
+    }
+}
+
 // LinksController.cs
 [ApiController]
 [Route("api/[controller]")]
@@ -40,9 +63,8 @@ public class LinksController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult Post([FromBody] dynamic input)
+    public async Task<IActionResult> PostAsync([FromBody] dynamic input)
     {
-        LinkCrawler crawler = new LinkCrawler();
 
         Console.WriteLine("start>>>>");
 
@@ -53,9 +75,14 @@ public class LinksController : ControllerBase
         string? domain = domainElement.ValueKind != JsonValueKind.Undefined ? domainElement.GetString():null;
         Console.WriteLine($"domain>>>, {domain}");
 
-        List<string> links = crawler.CrawlLinks(domain ?? "");
+        // LinkCrawler crawler = new LinkCrawler();
 
-        Console.WriteLine($"backlinks>>>>>  {links}");
+        // List<string> links = crawler.CrawlLinks(domain ?? "");
+
+        // Console.WriteLine($"backlinks>>>>>  {links}");
+
+        var retriever = new BacklinkRetriever();
+        string links = await retriever.GetBacklinks(domain ?? "");
         
         return Ok(links);
         // return Ok();
