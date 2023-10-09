@@ -6,11 +6,35 @@ function LandingPage () {
 
   const [text_userInput, setText_userInput] = useState('');
   const [backlinks, setBacklink] = useState([]);
+  const [times, setTimes] = useState([]);
   const [curTime, setCurTime] = useState('2023-02-03 16:00:00');
   const [link_exist, setLink_exist] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [domains, setDomains] = useState([]);
 
   useEffect (() => {
+
+
+    axios({
+      method: "post",
+      url: `http://localhost:5131/api/ExistedDomain`,
+    })
+    .then((response) => {
+
+      setDomains(response.data);
+      
+      console.log(response.data);
+    }).catch((error) => {
+      if (error.response) {
+          alert(error);
+          console.log("error~~~~~~~~~")
+          console.log(error.response)
+          console.log(error.response.status)
+          console.log(error.response.headers)
+        }
+    })
+
+
     const cur_time = new Date();
 
     const year = cur_time.getFullYear();
@@ -35,13 +59,19 @@ function LandingPage () {
   }
   const handle_get = async () => {
 
-    setLoading(true);
-      // alert('okay');
+    const domainContains = domains.filter(domain => domain.includes(text_userInput));
+
+    if (domainContains.length > 0) {
+      alert("This domain alreadyy have been checked!");
+    } else {
+
+      setLoading(true);
+        // alert('okay');
       const text = 'hello world';
 
       console.log('text>>>>', text );
-
-      try {
+  
+        try {
           axios({
               method: "post",
               url: `http://localhost:5131/api/Links`,
@@ -54,16 +84,16 @@ function LandingPage () {
               
               setLoading(false);
               // console.log('response>>>>>', response.data);
-
+  
               setBacklink(response.data);
-
+  
               console.log("backlinks>>>>", backlinks);
-
+  
               console.log("first url>>>>>", response.data[1]);
               
             }).catch((error) => {
               if (error.response) {
-
+  
                 setLoading(false);
                   alert(error);
                   console.log("error~~~~~~~~~")
@@ -75,9 +105,45 @@ function LandingPage () {
         } catch (error) {
           console.error('error:', error);
         }
+      }
   }
 
   const handle_save = () => {
+
+  }
+
+  const getExistedBacklink = (event) => {
+    const selectedDomain = event.target.innerText;
+
+    axios({
+      method: "post",
+      url: `http://localhost:5131/api/existedBacklink`,
+      data:{'domain':selectedDomain},
+      headers: {
+        "Content-Type": "application/json",
+      }
+    })
+    .then((response) => {
+      
+      console.log("existed domain>>>>", response.data.result_Backlink);
+
+      setBacklink(response.data.result_Backlink);
+
+      setTimes(response.data.result_time);
+
+      console.log("first url>>>>>", response.data[1]);
+      
+    }).catch((error) => {
+      if (error.response) {
+
+        setLoading(false);
+          alert(error);
+          console.log("error~~~~~~~~~")
+          console.log(error.response)
+          console.log(error.response.status)
+          console.log(error.response.headers)
+        }
+    })
 
   }
 
@@ -89,6 +155,16 @@ function LandingPage () {
         </div>
         
         {loading ? <div className='loading'><ReactLoading  color='grey' type='spinningBubbles' height={'20%'} width={'20%'}/> </div>:
+
+        <div style={{display:'flex', marginTop:'30px'}}>
+          <div className='domain_bar'>
+            {domains.map((domain) => {
+              return (
+
+                <p style={{cursor:'pointer', textAlign:'left'}} onClick={getExistedBacklink}>{domain}</p>
+              )
+            })}
+          </div>
           <div className='tableboard'>
 
             <table>
@@ -96,7 +172,7 @@ function LandingPage () {
                 <tr>
                   <th>No</th>
                   <th>Backlink</th>
-                  <th>Cur_time</th>
+                  <th>Checked Time</th>
                 </tr>
               </thead>
               <tbody>
@@ -104,15 +180,17 @@ function LandingPage () {
                   <tr key={index}>
                     <td>{(index+1).toString()}</td>
                     <td>{link.toString()}</td>
-                    <td>{curTime}</td>
+                    <td>{times[index]}</td>
                   </tr>  
                 ))}
               </tbody>
             </table>
 
             {/* {link_exist && <button className='saveButton' onClick={handle_save}>SAVE</button> } */}
-            
+
           </div>
+        </div>
+          
         }
         
       </>

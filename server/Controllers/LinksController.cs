@@ -1,3 +1,4 @@
+using System.Runtime.Intrinsics.X86;
 using System.Runtime.CompilerServices;
 using System.Data;
 using System.Reflection.Metadata;
@@ -116,12 +117,6 @@ public class LinksController : ControllerBase
 
             Console.WriteLine($"backlink>>>>, {link}");
 
-            // using var cmd = new MySqlCommand($"INSERT INTO backlinks (domain, backlink) VALUES({domain}, {link})", _connection);
-            // using var cmd = Db.Connection.CreateCommand();
-
-            // cmd.CommandText = $"INSERT INTO backlinks (domain, backlink) VALUES({domain}, {link}";
-
-            // using var command = new MySqlCommand($"INSERT INTO backlinks (domain, backlink) VALUES({domain1}, {links})", connection);
             using MySqlCommand command = new MySqlCommand($"INSERT INTO backlinks (domain, backlink, created_time) VALUES(@domain, @backlink, @created_time)", connection);
 
             command.Parameters.AddWithValue("@domain", domain);
@@ -134,8 +129,16 @@ public class LinksController : ControllerBase
 
         }
 
+        using MySqlCommand command2 = new MySqlCommand($"INSERT INTO domain (domain) VALUES(@domain)", connection);
+
+        command2.Parameters.AddWithValue("@domain", domain);
+        
+        command2.ExecuteNonQuery();
+
         await connection.CloseAsync();
         
     }
 }
+
+
 
