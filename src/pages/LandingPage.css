@@ -31,19 +31,25 @@ button {
 }
 
 .past_work {
-    width: 30%;
+    width: 90%;
     border: 1px solid;
     border-radius: 10px;
     margin-top: 30px;
     padding-top: 20px;
 }
+.sidebar {
+    width: 20%;
+    display: flex;
+    justify-content: center;
+}
 .domain_bar {
-    padding-left: 50px;
+
 }
 table {
     width: 95%;
     border: 1px solid;
     border-radius: 10px;
+    overflow-wrap: anywhere;
     padding: 20px;
 }
 

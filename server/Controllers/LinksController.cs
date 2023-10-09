@@ -1,3 +1,6 @@
+using System.Net.Mail;
+using System.Collections.Generic;
+using System.Text;
 using System.Runtime.Intrinsics.X86;
 using System.Runtime.CompilerServices;
 using System.Data;
@@ -32,10 +35,33 @@ public class LinkCrawler
         foreach (HtmlNode linkNode in doc.DocumentNode.SelectNodes("//a[@href]"))
         {
             string link = WebUtility.HtmlDecode(linkNode.GetAttributeValue("href", ""));
-            links.Add(link);
+
+            if (check_link(link, domain)) {
+                if (!check_existing(links, link)) {
+
+                    links.Add(link);
+                }
+            }
         }
 
         return links;
+    }
+
+    public bool check_link (string link, string domain) {
+        if ( link.Contains("https://") || link.Contains("http://")) {
+            if (!link.Contains(domain)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public bool check_existing (List<string> links, string link) {
+        if (links.Contains(link)) {
+            return true;
+        }
+        return false;
     }
 }
 public class GoogleSearchService
@@ -237,6 +263,8 @@ public class LinksController : ControllerBase
         await connection.CloseAsync();
         
     }
+
+    
 }
 
 

@@ -44,7 +44,7 @@ function LandingPage () {
     const minutes = String(cur_time.getMinutes()).padStart(2, '0');
     const seconds = String(cur_time.getSeconds()).padStart(2, '0');
 
-    const formattedTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    const formattedTime = `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
     setCurTime(formattedTime);
 
     if (backlinks.length>1) {
@@ -62,7 +62,7 @@ function LandingPage () {
     const domainContains = domains.filter(domain => domain.includes(text_userInput));
 
     if (domainContains.length > 0) {
-      alert("This domain alreadyy have been checked!");
+      alert("This domain is already checked!");
     } else {
 
       setLoading(true);
@@ -112,6 +112,24 @@ function LandingPage () {
 
   }
 
+  const formatTimes = (times) => {
+    const formattedTimes = times.map(time => {
+      const formattedTime = new Date(time).toLocaleString("en-GB", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit"
+      }).replace(/,/g, "");
+
+      return formattedTime;
+
+    })
+
+    return formattedTimes;
+  }
+
   const getExistedBacklink = (event) => {
     const selectedDomain = event.target.innerText;
 
@@ -129,7 +147,7 @@ function LandingPage () {
 
       setBacklink(response.data.result_Backlink);
 
-      setTimes(response.data.result_time);
+      setTimes(formatTimes(response.data.result_time));
 
       console.log("first url>>>>>", response.data[1]);
       
@@ -157,18 +175,24 @@ function LandingPage () {
         {loading ? <div className='loading'><ReactLoading  color='grey' type='spinningBubbles' height={'20%'} width={'20%'}/> </div>:
 
         <div style={{display:'flex', marginTop:'30px'}}>
-          <div className='past_work'>
-            <div >
-              <p style={{margin:'0', fontSize:'20px', fontWeight:'500'}}>past work</p>
-            </div>
-            <div  className='domain_bar'>
+          <div className='sidebar'>
 
-              {domains.map((domain) => {
-                return (
+            <div className='past_work'>
+              <div >
+                <p style={{margin:'0', fontSize:'20px', fontWeight:'500'}}>past work</p>
+              </div>
+              <div>
 
-                  <p style={{cursor:'pointer', textAlign:'left'}} onClick={getExistedBacklink}>{domain}</p>
-                )
-              })}
+                <ol>
+
+                  {domains.map((domain) => {
+                    return (
+
+                      <li style={{cursor:'pointer', textAlign:'left', marginTop:'5px', marginBottom:'5px'}} onClick={getExistedBacklink}>{domain}</li>
+                    )
+                  })}
+                </ol>
+              </div>
             </div>
           </div>
           <div className='tableboard'>
@@ -186,7 +210,7 @@ function LandingPage () {
                   <tr key={index}>
                     <td>{(index+1).toString()}</td>
                     <td>{link.toString()}</td>
-                    <td>{times[index]}</td>
+                    <td>{times[index] === undefined ? curTime : times[index]}</td>
                   </tr>  
                 ))}
               </tbody>
