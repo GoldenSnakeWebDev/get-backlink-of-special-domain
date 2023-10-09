@@ -13,6 +13,8 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using MySql.Data.MySqlClient;
 using System.Net.Http;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace server.Controllers;
 
@@ -34,6 +36,46 @@ public class LinkCrawler
         }
 
         return links;
+    }
+}
+public class GoogleSearchService
+{
+    private readonly HttpClient _httpClient;
+    private const string ApiKey = "AIzaSyCuOrloBdO74E3ZWvuElc5iFQM-e59kPwM";
+    private const string SearchEngineId = "62fa937cd246d4571";
+
+    public GoogleSearchService()
+    {
+        _httpClient = new HttpClient();
+    }
+
+    public async Task<List<string>> Search(string query)
+    {
+        var searchResults = new List<string>();
+
+        // Construct the API request URL
+        string apiRequestUrl = $"https://www.googleapis.com/customsearch/v1?key={ApiKey}&cx={SearchEngineId}&q={Uri.EscapeDataString(query)}";
+
+        HttpResponseMessage response = await _httpClient.GetAsync(apiRequestUrl);
+
+
+        if (response.IsSuccessStatusCode)
+        {
+            string jsonString = await response.Content.ReadAsStringAsync();
+        Console.WriteLine($"okay?>>>> {jsonString}");
+
+            // Parse the JSON response to extract the search results
+            JObject json = JObject.Parse(jsonString);
+            JArray resultItems = (JArray)json["items"];
+
+            foreach (JObject resultItem in resultItems)
+            {
+                string link = resultItem.Value<string>("link");
+                searchResults.Add(link);
+            }
+        }
+
+        return searchResults;
     }
 }
 
@@ -67,20 +109,35 @@ public class BacklinkService
     {
         var backlinks = new List<string>();
 
-        string searchUrl = $"https://www.google.com/search?q=link:{Uri.EscapeDataString(domain)}";
+        string searchUrl = $"https://www.google.com/search?q=link%3A{domain}";
 
         Console.WriteLine($"searchUrl>>>> {searchUrl}");
 
         HtmlWeb htmlWeb = new HtmlWeb();
         HtmlDocument htmlDocument = htmlWeb.Load(searchUrl);
+        
+        var links = htmlDocument.DocumentNode.SelectNodes("//div[@id='search']//a");
 
+        if (links != null)
+        {
+            foreach (var link in links)
+            {
+                string href = link.GetAttributeValue("href", "");
+                if (!string.IsNullOrEmpty(href) && href.StartsWith("/url?q="))
+                {
+                    string backlink = href.Substring(7);
+                    backlinks.Add(backlink);
+                    Console.WriteLine(backlink);
+                }
+            }
+        }
         // HtmlNode backlinkNodes = htmlDocument.DocumentNode.SelectNodes("//a[@href]");
 
-        foreach (HtmlNode node in htmlDocument.DocumentNode.SelectNodes("//a[@href]"))
-        {
-            string link = WebUtility.HtmlDecode(node.GetAttributeValue("href", ""));
-            backlinks.Add(link);
-        }
+        // foreach (HtmlNode node in htmlDocument.DocumentNode.SelectNodes("//a[@href]"))
+        // {
+        //     string link = WebUtility.HtmlDecode(node.GetAttributeValue("href", ""));
+        //     backlinks.Add(link);
+        // }
 
         return backlinks;
     }
@@ -108,11 +165,9 @@ public class LinksController : ControllerBase
         string? domain = domainElement.ValueKind != JsonValueKind.Undefined ? domainElement.GetString():null;
         Console.WriteLine($"domain>>>, {domain}");
 
-        // LinkCrawler crawler = new LinkCrawler();
+        LinkCrawler crawler = new LinkCrawler();
 
-        // Console.WriteLine("okay");
-
-        // List<string> links = crawler.CrawlLinks(domain ?? "");
+        List<string> links = crawler.CrawlLinks(domain ?? "");
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -123,11 +178,18 @@ public class LinksController : ControllerBase
 
         //////////////////////////////////////////////////////////////////////////////////////////////
         
-        var backlinkService = new BacklinkService();
+        // var backlinkService = new BacklinkService();
 
-        List<string> links = await backlinkService.GetBacklinks(domain ?? "");
+        // List<string> links = await backlinkService.GetBacklinks(domain ?? "");
 
         //////////////////////////////////////////////////////////////////////////////////////////////////
+
+        // var googleSearchService = new GoogleSearchService();
+
+        // List<string> links = await googleSearchService.Search(domain ?? "");
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////
+
         save_Backlink(links, domain);
 
         // string links = "hello";
