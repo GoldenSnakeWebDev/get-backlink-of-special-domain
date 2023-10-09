@@ -1,3 +1,5 @@
+using System.Runtime.CompilerServices;
+using System.Data;
 using System.Reflection.Metadata;
 using System.Runtime.InteropServices;
 using Microsoft.AspNetCore.Mvc;
@@ -84,17 +86,23 @@ public class LinksController : ControllerBase
 
         List<string> links = crawler.CrawlLinks(domain ?? "");
 
-        Console.WriteLine($"backlinks>>>>>  {links}");
+        // Console.WriteLine($"backlinks>>>>>  {links}");
 
         // var retriever = new BacklinkRetriever();
         // string links = await retriever.GetBacklinks(domain ?? "");
         save_Backlink(links, domain);
+
+        // string links = "hello";
+        // save_Backlink(links, domain);
 
         return Ok(links);
         // return Ok();
     }
 
     public async void save_Backlink(List<string> links, string domain) {
+    // public async void save_Backlink(string links, string domain1) {
+
+        DateTime current_time = DateTime.Now;
 
         string connectionString = "server=localhost;userid=root;password=;database=backlink";
 
@@ -104,24 +112,25 @@ public class LinksController : ControllerBase
 
         Console.WriteLine("save okay?");
 
-        // await connection.OpenAsync();
-
-        // Console.WriteLine("save okay???");
-
         foreach (var link in links) {
+
+            Console.WriteLine($"backlink>>>>, {link}");
 
             // using var cmd = new MySqlCommand($"INSERT INTO backlinks (domain, backlink) VALUES({domain}, {link})", _connection);
             // using var cmd = Db.Connection.CreateCommand();
 
             // cmd.CommandText = $"INSERT INTO backlinks (domain, backlink) VALUES({domain}, {link}";
 
-            using var command = new MySqlCommand($"INSERT INTO backlinks (domain, backlink) VALUES({domain}, {link}", connection);
-    
-            Console.WriteLine("save okay???");
+            // using var command = new MySqlCommand($"INSERT INTO backlinks (domain, backlink) VALUES({domain1}, {links})", connection);
+            using MySqlCommand command = new MySqlCommand($"INSERT INTO backlinks (domain, backlink, created_time) VALUES(@domain, @backlink, @created_time)", connection);
 
-            await command.ExecuteNonQueryAsync();
+            command.Parameters.AddWithValue("@domain", domain);
+            command.Parameters.AddWithValue("@backlink", link);
+            command.Parameters.AddWithValue("@created_time", current_time);
 
-            Console.WriteLine("save okay???");
+            command.ExecuteNonQuery();
+
+            Console.WriteLine("save okay!!!");
 
         }
 
