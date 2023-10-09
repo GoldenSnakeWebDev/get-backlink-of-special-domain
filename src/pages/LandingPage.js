@@ -1,13 +1,14 @@
 import './LandingPage.css';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-
+import ReactLoading from 'react-loading';
 function LandingPage () {
 
   const [text_userInput, setText_userInput] = useState('');
   const [backlinks, setBacklink] = useState([]);
   const [curTime, setCurTime] = useState('2023-02-03 16:00:00');
   const [link_exist, setLink_exist] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect (() => {
     const cur_time = new Date();
@@ -23,8 +24,8 @@ function LandingPage () {
     setCurTime(formattedTime);
 
     if (backlinks.length>1) {
-
         setLink_exist(true);
+        
     }
 
   }, [backlinks]) 
@@ -33,6 +34,8 @@ function LandingPage () {
     setText_userInput(event.target.value);
   }
   const handle_get = async () => {
+
+    setLoading(true);
       // alert('okay');
       const text = 'hello world';
 
@@ -49,6 +52,7 @@ function LandingPage () {
             })
             .then((response) => {
               
+              setLoading(false);
               // console.log('response>>>>>', response.data);
 
               setBacklink(response.data);
@@ -59,6 +63,8 @@ function LandingPage () {
               
             }).catch((error) => {
               if (error.response) {
+
+                setLoading(false);
                   alert(error);
                   console.log("error~~~~~~~~~")
                   console.log(error.response)
@@ -81,31 +87,34 @@ function LandingPage () {
             <input type='text' value={text_userInput} onChange={handle_textarea} placeholder='input the domain...'></input>
             <button onClick={handle_get}>GET</button>
         </div>
+        
+        {loading ? <div className='loading'><ReactLoading  color='grey' type='spinningBubbles' height={'20%'} width={'20%'}/> </div>:
+          <div className='tableboard'>
 
-        <div className='tableboard'>
+            <table>
+              <thead>
+                <tr>
+                  <th>No</th>
+                  <th>Backlink</th>
+                  <th>Cur_time</th>
+                </tr>
+              </thead>
+              <tbody>
+                {backlinks.map((link, index) => (
+                  <tr key={index}>
+                    <td>{(index+1).toString()}</td>
+                    <td>{link.toString()}</td>
+                    <td>{curTime}</td>
+                  </tr>  
+                ))}
+              </tbody>
+            </table>
 
-          <table>
-            <thead>
-              <tr>
-                <th>No</th>
-                <th>Backlink</th>
-                <th>Cur_time</th>
-              </tr>
-            </thead>
-            <tbody>
-              {backlinks.map((link, index) => (
-                <tr key={index}>
-                  <td>{(index+1).toString()}</td>
-                  <td>{link.toString()}</td>
-                  <td>{curTime}</td>
-                </tr>  
-              ))}
-            </tbody>
-          </table>
-
-          {link_exist && <button className='saveButton' onClick={handle_save}>SAVE</button> }
-          
-        </div>
+            {/* {link_exist && <button className='saveButton' onClick={handle_save}>SAVE</button> } */}
+            
+          </div>
+        }
+        
       </>
     )
 }
