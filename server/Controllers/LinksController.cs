@@ -12,6 +12,7 @@ using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using MySql.Data.MySqlClient;
+using System.Net.Http;
 
 namespace server.Controllers;
 
@@ -59,6 +60,32 @@ public class BacklinkRetriever
     }
 }
 
+public class BacklinkService
+{
+   
+    public async Task<List<string>> GetBacklinks(string domain)
+    {
+        var backlinks = new List<string>();
+
+        string searchUrl = $"https://www.google.com/search?q=link:{Uri.EscapeDataString(domain)}";
+
+        Console.WriteLine($"searchUrl>>>> {searchUrl}");
+
+        HtmlWeb htmlWeb = new HtmlWeb();
+        HtmlDocument htmlDocument = htmlWeb.Load(searchUrl);
+
+        // HtmlNode backlinkNodes = htmlDocument.DocumentNode.SelectNodes("//a[@href]");
+
+        foreach (HtmlNode node in htmlDocument.DocumentNode.SelectNodes("//a[@href]"))
+        {
+            string link = WebUtility.HtmlDecode(node.GetAttributeValue("href", ""));
+            backlinks.Add(link);
+        }
+
+        return backlinks;
+    }
+}
+
 // LinksController.cs
 [ApiController]
 [Route("api/[controller]")]
@@ -81,16 +108,26 @@ public class LinksController : ControllerBase
         string? domain = domainElement.ValueKind != JsonValueKind.Undefined ? domainElement.GetString():null;
         Console.WriteLine($"domain>>>, {domain}");
 
-        LinkCrawler crawler = new LinkCrawler();
+        // LinkCrawler crawler = new LinkCrawler();
 
-        Console.WriteLine("okay");
+        // Console.WriteLine("okay");
 
-        List<string> links = crawler.CrawlLinks(domain ?? "");
+        // List<string> links = crawler.CrawlLinks(domain ?? "");
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////
 
         // Console.WriteLine($"backlinks>>>>>  {links}");
 
         // var retriever = new BacklinkRetriever();
         // string links = await retriever.GetBacklinks(domain ?? "");
+
+        //////////////////////////////////////////////////////////////////////////////////////////////
+        
+        var backlinkService = new BacklinkService();
+
+        List<string> links = await backlinkService.GetBacklinks(domain ?? "");
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////
         save_Backlink(links, domain);
 
         // string links = "hello";

@@ -157,13 +157,19 @@ function LandingPage () {
         {loading ? <div className='loading'><ReactLoading  color='grey' type='spinningBubbles' height={'20%'} width={'20%'}/> </div>:
 
         <div style={{display:'flex', marginTop:'30px'}}>
-          <div className='domain_bar'>
-            {domains.map((domain) => {
-              return (
+          <div className='past_work'>
+            <div >
+              <p style={{margin:'0', fontSize:'20px', fontWeight:'500'}}>past work</p>
+            </div>
+            <div  className='domain_bar'>
 
-                <p style={{cursor:'pointer', textAlign:'left'}} onClick={getExistedBacklink}>{domain}</p>
-              )
-            })}
+              {domains.map((domain) => {
+                return (
+
+                  <p style={{cursor:'pointer', textAlign:'left'}} onClick={getExistedBacklink}>{domain}</p>
+                )
+              })}
+            </div>
           </div>
           <div className='tableboard'>
 

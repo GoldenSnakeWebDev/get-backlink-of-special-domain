@@ -29,12 +29,15 @@ button {
 
     margin-left: 30px;
 }
-.domain_bar {
+
+.past_work {
     width: 30%;
     border: 1px solid;
     border-radius: 10px;
     margin-top: 30px;
     padding-top: 20px;
+}
+.domain_bar {
     padding-left: 50px;
 }
 table {
