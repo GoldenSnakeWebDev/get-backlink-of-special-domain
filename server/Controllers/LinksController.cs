@@ -240,8 +240,6 @@ public class LinksController : ControllerBase
 
         foreach (var link in links) {
 
-            Console.WriteLine($"backlink>>>>, {link}");
-
             using MySqlCommand command = new MySqlCommand($"INSERT INTO backlinks (domain, backlink, created_time) VALUES(@domain, @backlink, @created_time)", connection);
 
             command.Parameters.AddWithValue("@domain", domain);
@@ -249,8 +247,6 @@ public class LinksController : ControllerBase
             command.Parameters.AddWithValue("@created_time", current_time);
 
             command.ExecuteNonQuery();
-
-            Console.WriteLine("save okay!!!");
 
         }
 

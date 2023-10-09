@@ -66,8 +66,6 @@ public class ExistedBacklinkController : ControllerBase
 
         command.Parameters.AddWithValue("@domain", domain);
 
-        Console.WriteLine($"goten domain>>> {domain}");
-
         var reader =  command.ExecuteReader();
 
         List<string[]> result_Backlink = new List<string[]>();
