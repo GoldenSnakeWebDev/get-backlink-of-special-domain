@@ -1,5 +1,6 @@
+using System.Reflection.Metadata;
+using System.Runtime.InteropServices;
 using Microsoft.AspNetCore.Mvc;
-namespace server.Controllers;
 
 // LinkCrawler.cs
 using HtmlAgilityPack;
@@ -7,6 +8,9 @@ using System.Net;
 using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using MySql.Data.MySqlClient;
+
+namespace server.Controllers;
 
 public class LinkCrawler
 {
@@ -57,14 +61,6 @@ public class BacklinkRetriever
 [Route("api/[controller]")]
 public class LinksController : ControllerBase
 {
-
-    private readonly MySqlConnection _connection;
-
-    public YourController(MySqlConnection connection)
-    {
-        _connection = connection;
-    }
-
     public class ParamsModel {
         public string? Param {get; set;}
     }
@@ -82,28 +78,55 @@ public class LinksController : ControllerBase
         string? domain = domainElement.ValueKind != JsonValueKind.Undefined ? domainElement.GetString():null;
         Console.WriteLine($"domain>>>, {domain}");
 
-        // LinkCrawler crawler = new LinkCrawler();
+        LinkCrawler crawler = new LinkCrawler();
 
-        // List<string> links = crawler.CrawlLinks(domain ?? "");
+        Console.WriteLine("okay");
 
-        // Console.WriteLine($"backlinks>>>>>  {links}");
+        List<string> links = crawler.CrawlLinks(domain ?? "");
 
-        var retriever = new BacklinkRetriever();
-        string links = await retriever.GetBacklinks(domain ?? "");
-        
+        Console.WriteLine($"backlinks>>>>>  {links}");
+
+        // var retriever = new BacklinkRetriever();
+        // string links = await retriever.GetBacklinks(domain ?? "");
+        save_Backlink(links, domain);
+
         return Ok(links);
         // return Ok();
     }
 
-    public void save_Backlink(List<string> links, string domain) {
-        await _connection.OpenAsync();
+    public async void save_Backlink(List<string> links, string domain) {
 
-        for (link in lins) {
+        string connectionString = "server=localhost;userid=root;password=;database=backlink";
 
-            using var cmd = new MySqlCommand($"INSERT INTO backlinks VALUES({domain}, )", _connection);
+        using var connection = new MySqlConnection("server=localhost;userid=root;password=;database=backlink");
+
+        connection.Open();
+
+        Console.WriteLine("save okay?");
+
+        // await connection.OpenAsync();
+
+        // Console.WriteLine("save okay???");
+
+        foreach (var link in links) {
+
+            // using var cmd = new MySqlCommand($"INSERT INTO backlinks (domain, backlink) VALUES({domain}, {link})", _connection);
+            // using var cmd = Db.Connection.CreateCommand();
+
+            // cmd.CommandText = $"INSERT INTO backlinks (domain, backlink) VALUES({domain}, {link}";
+
+            using var command = new MySqlCommand($"INSERT INTO backlinks (domain, backlink) VALUES({domain}, {link}", connection);
+    
+            Console.WriteLine("save okay???");
+
+            await command.ExecuteNonQueryAsync();
+
+            Console.WriteLine("save okay???");
+
         }
 
-
+        await connection.CloseAsync();
+        
     }
 }
 
