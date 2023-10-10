@@ -218,35 +218,6 @@ public class LinksController : ControllerBase
         string? domain = domainElement.ValueKind != JsonValueKind.Undefined ? domainElement.GetString():null;
         Console.WriteLine($"domain>>>, {domain}");
 
-        // LinkCrawler crawler = new LinkCrawler();
-
-        // List<string> links = crawler.CrawlLinks(domain ?? "");
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        // Console.WriteLine($"backlinks>>>>>  {links}");
-
-        // var retriever = new BacklinkRetriever();
-        // string links = await retriever.GetBacklinks(domain ?? "");
-
-        //////////////////////////////////////////////////////////////////////////////////////////////
-        
-        // var backlinkService = new BacklinkService();
-
-        // List<string> links = await backlinkService.GetBacklinks(domain ?? "");
-
-        //////////////////////////////////////////////////////////////////////////////////////////////////
-
-        // var googleSearchService = new GoogleSearchService();
-
-        // List<string> links = await googleSearchService.Search(domain ?? "");
-
-        //////////////////////////////////////////////////////////////////////////////////////////////////
-
-        
-
-        // string links = "hello";
-        // save_Backlink(links, domain);
         //////////////////////////////////////////////////////////////////////////////////////////////////
         // string apiKey = "AIzaSyCqY41oLU4KL9JBIPsZyFF4W9A00WmlKsI";
         string apiKey = "AIzaSyDK_BNn-W6zDYg4D1Jy-0mMQvR-hHDJTPA";
