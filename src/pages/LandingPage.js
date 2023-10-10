@@ -200,9 +200,9 @@ function LandingPage () {
             <table>
               <thead>
                 <tr>
-                  <th>No</th>
+                  <th style={{minWidth:'30px'}}>No</th>
                   <th>Backlink</th>
-                  <th>Checked Time</th>
+                  <th style={{minWidth:'50px'}}>Checked Time</th>
                 </tr>
               </thead>
               <tbody>

@@ -1,10 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "S4gV3WERNmqQIiBptPF0RFK7aHvsOBU3wqkA2BYhCW0+m1iUxEZ3k1+4b3tFhMw+kJGacK6+JJR2PJeth1UbxA==",
+  "dgSpecHash": "l7BSWvstGcs0BxTpOOzvB5t1kk+qQLrWF9I/dO/JFwfzl3WKJGdXS0izfzp2Nwvt4m+hgcqs4fLuRKyofHEH1g==",
   "success": true,
   "projectFilePath": "D:\\Development\\Dot net\\backlink\\Backlink\\server\\server.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Administrator\\.nuget\\packages\\bouncycastle.netcore\\1.8.3\\bouncycastle.netcore.1.8.3.nupkg.sha512",
+    "C:\\Users\\Administrator\\.nuget\\packages\\google.apis\\1.62.1\\google.apis.1.62.1.nupkg.sha512",
+    "C:\\Users\\Administrator\\.nuget\\packages\\google.apis.core\\1.62.1\\google.apis.core.1.62.1.nupkg.sha512",
     "C:\\Users\\Administrator\\.nuget\\packages\\google.protobuf\\3.11.4\\google.protobuf.3.11.4.nupkg.sha512",
     "C:\\Users\\Administrator\\.nuget\\packages\\htmlagilitypack\\1.11.54\\htmlagilitypack.1.11.54.nupkg.sha512",
     "C:\\Users\\Administrator\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",

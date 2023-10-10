@@ -1,3 +1,4 @@
+using System.Threading.Tasks.Dataflow;
 using System.Net.Mail;
 using System.Collections.Generic;
 using System.Text;
@@ -21,35 +22,83 @@ using Newtonsoft.Json.Linq;
 
 namespace server.Controllers;
 
-public class LinkCrawler
+public class BacklinkService
 {
-    public List<string> CrawlLinks(string domain)
+    public async Task<List<string>> GetBacklinks(string domain, string cx, string apikey)
     {
+        var backlinks = new List<string>();
+        var googleSearchResult = new List<string>();
+        // List<string> googleSearchResult;
+        int start = 1;
+        int numResults = 100; // Set the number of results you want to retrieve
+
+        while (backlinks.Count < numResults)
+        {
+            var apiUrl = $"https://customsearch.googleapis.com/customsearch/v1?cx={cx}&key={apikey}&q=link:{domain}&start={start}";
+            HttpClient httpClient = new HttpClient();
+            var response = await httpClient.GetStringAsync(apiUrl);
+
+            var jResponse = JObject.Parse(response);
+
+            foreach (var item in jResponse["items"])
+            {
+                string link = item["link"].ToString();
+                googleSearchResult.Add(link);
+            }
+
+            if (jResponse["queries"]["nextPage"] == null)
+            {
+                break; // No more results available
+            }
+
+            int nextStart = int.Parse(jResponse["queries"]["nextPage"][0]["startIndex"].ToString());
+            if (nextStart <= start)
+            {
+                break; // Ensure we don't get stuck in an infinite loop
+            }
+
+            start = nextStart;
+        }
+
+        foreach (var link in googleSearchResult)
+        {
+            Console.WriteLine(link);
+        }
+
+        backlinks = await filterSearchResult(googleSearchResult, domain);
+
+        return backlinks;
+
+    }
+
+    public async Task<List<string>> filterSearchResult(List<string> searchResult, string domain) {
+        
         var links = new List<string>();
 
-        string url = $"http://{domain}"; // Create the URL to crawl
+        Console.WriteLine($"filter okay???? {searchResult}");
 
-        Console.WriteLine($"url>>>> {url}");
 
-        HtmlWeb web = new HtmlWeb();
-            Console.WriteLine("oka!");
 
-        HtmlDocument doc = web.Load(url);
-
-            Console.WriteLine("oka!");
-        foreach (HtmlNode linkNode in doc.DocumentNode.SelectNodes("//a[@href]"))
+        foreach (var link in searchResult)
         {
-            string link = WebUtility.HtmlDecode(linkNode.GetAttributeValue("href", ""));
 
-            if (check_link(link, domain)) {
-                if (!check_existing(links, link)) {
+            Console.WriteLine($"filter link>> {link}");
 
-                    links.Add(link);
+            if (!check_link(link, domain))
+            {
+                if (!check_existing(searchResult, link))
+                {
+                    if (CrawlLinksAndCheckDomain(link, domain))
+                    {
+                        links.Add(link);
+                    }    
                 }
+                
             }
         }
 
         return links;
+
     }
 
     public bool check_link (string link, string domain) {
@@ -68,29 +117,25 @@ public class LinkCrawler
         }
         return false;
     }
-}
 
-public class BacklinkService
-{
-   
-    public async Task<List<string>> GetBacklinks10(string domain, string cx, string apikey)
+    public bool CrawlLinksAndCheckDomain(string URL, string domain)
     {
-        var backlinks = new List<string>();
+        var links = new List<string>();
 
-        int start = 1;
-        int numResults = 100;
+        HtmlWeb web = new HtmlWeb();
 
+        HtmlDocument doc = web.Load(URL);
 
-        var apiUrl =$"https://customsearch.googleapis.com/customsearch/v1?cx={cx}&key={apikey}&q={domain}&start={start}";
-        HttpClient httpClient = new HttpClient();
-        var response = await httpClient.GetStringAsync(apiUrl);
+        foreach (HtmlNode linkNode in doc.DocumentNode.SelectNodes("//a[@href]"))
+        {
+            string link = WebUtility.HtmlDecode(linkNode.GetAttributeValue("href", ""));
 
-        // var response = http.Request(apiUrl);
-        var jResponse = JObject.Parse(response);
+            if (check_link(link, domain)) {
+                return true;
+            }
+        }
 
-        Console.WriteLine($"response>>>> {jResponse}");
-
-        return backlinks;
+        return false;
     }
     
 }
@@ -147,13 +192,18 @@ public class LinksController : ControllerBase
         // string links = "hello";
         // save_Backlink(links, domain);
         //////////////////////////////////////////////////////////////////////////////////////////////////
-        string apiKey = "AIzaSyCqY41oLU4KL9JBIPsZyFF4W9A00WmlKsI";
+        // string apiKey = "AIzaSyCqY41oLU4KL9JBIPsZyFF4W9A00WmlKsI";
+        string apiKey = "AIzaSyCT1V7L8cqWwlaq4t9Z7xvv0bEWPl4TV7M";
         string searchEngineId = "d61f36940c5cf411e";
         var backlinkService = new BacklinkService();
-        List<string> links = await backlinkService.GetBacklinks10( domain, searchEngineId, apiKey);
+        List<string> links = await backlinkService.GetBacklinks( domain, searchEngineId, apiKey);
         //////////////////////////////////////////////////////////////////////////////////////////////////    
 
-        save_Backlink(links, domain);    
+        if (links.Count > 0)
+        {
+            
+            save_Backlink(links, domain);    
+        }
         return Ok(links);
         // return Ok();
     }
