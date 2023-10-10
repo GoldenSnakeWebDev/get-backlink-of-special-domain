@@ -196,7 +196,6 @@ public class BacklinkService
     }
 }
 
-// LinksController.cs
 [ApiController]
 [Route("api/[controller]")]
 public class LinksController : ControllerBase
@@ -233,11 +232,9 @@ public class LinksController : ControllerBase
             save_Backlink(links, domain);    
         }
         return Ok(links);
-        // return Ok();
     }
 
     public async void save_Backlink(List<string> links, string domain) {
-    // public async void save_Backlink(string links, string domain1) {
 
         DateTime current_time = DateTime.Now;
 
