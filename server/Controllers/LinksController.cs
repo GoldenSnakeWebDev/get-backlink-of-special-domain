@@ -1,4 +1,4 @@
-using System.Threading.Tasks.Dataflow;
+using System.Reflection.Emit;
 using System.Net.Mail;
 using System.Collections.Generic;
 using System.Text;
@@ -8,6 +8,7 @@ using System.Data;
 using System.Reflection.Metadata;
 using System.Runtime.InteropServices;
 using Microsoft.AspNetCore.Mvc;
+// LinkCrawler.cs
 using HtmlAgilityPack;
 using System.Net;
 using System;
@@ -21,23 +22,73 @@ using Newtonsoft.Json.Linq;
 
 namespace server.Controllers;
 
+public class LinkCrawler
+{
+    public List<string> CrawlLinks(string domain)
+    {
+        var links = new List<string>();
+
+        string url = $"http://{domain}"; // Create the URL to crawl
+
+        Console.WriteLine($"url>>>> {url}");
+
+        HtmlWeb web = new HtmlWeb();
+            Console.WriteLine("oka!");
+
+        HtmlDocument doc = web.Load(url);
+
+            Console.WriteLine("oka!");
+        foreach (HtmlNode linkNode in doc.DocumentNode.SelectNodes("//a[@href]"))
+        {
+            string link = WebUtility.HtmlDecode(linkNode.GetAttributeValue("href", ""));
+
+            if (check_link(link, domain)) {
+                if (!check_existing(links, link)) {
+
+                    links.Add(link);
+                }
+            }
+        }
+
+        return links;
+    }
+
+    public bool check_link (string link, string domain) {
+        if ( link.Contains("https://") || link.Contains("http://")) {
+            if (!link.Contains(domain)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public bool check_existing (List<string> links, string link) {
+        if (links.Contains(link)) {
+            return true;
+        }
+        return false;
+    }
+}
+
 public class BacklinkService
 {
-    public async Task<List<string>> GetBacklinks(string domain, string cx, string apikey)
+   
+    public async Task<List<string>> GetBacklinks10(string domain, string cx, string apikey)
     {
         var backlinks = new List<string>();
         var googleSearchResult = new List<string>();
+
         int start = 1;
-        int numResults = 100; // Set the number of results you want to retrieve
+        int numResults = 10;
 
         while (backlinks.Count < numResults)
         {
-            // var apiUrl = $"https://customsearch.googleapis.com/customsearch/v1/siterestrict?cx={cx}&key={apikey}&q=link:{domain}&start={start}";
-            var apiUrl = $"https://customsearch.googleapis.com/customsearch/v1/?cx={cx}&key={apikey}&q=link:{domain}&start={start}";
-
+            var apiUrl =$"https://customsearch.googleapis.com/customsearch/v1?cx={cx}&key={apikey}&q={domain}&start={start}";
             HttpClient httpClient = new HttpClient();
             var response = await httpClient.GetStringAsync(apiUrl);
 
+            // var response = http.Request(apiUrl);
             var jResponse = JObject.Parse(response);
 
             foreach (var item in jResponse["items"])
@@ -52,12 +103,14 @@ public class BacklinkService
             }
 
             int nextStart = int.Parse(jResponse["queries"]["nextPage"][0]["startIndex"].ToString());
+
             if (nextStart <= start)
             {
                 break; // Ensure we don't get stuck in an infinite loop
             }
 
             start = nextStart;
+
         }
 
         foreach (var link in googleSearchResult)
@@ -68,9 +121,8 @@ public class BacklinkService
         backlinks = await filterSearchResult(googleSearchResult, domain);
 
         return backlinks;
-
     }
-
+    
     public async Task<List<string>> filterSearchResult(List<string> searchResult, string domain) {
         
         var links = new List<string>();
@@ -84,13 +136,17 @@ public class BacklinkService
 
             if (!check_link(link, domain))
             {
-                if (!check_existing(searchResult, link))
-                {
+                Console.WriteLine("checked link");
+
+                // if (!check_existing(searchResult, link))
+                // {
+                    // Console.WriteLine("don't exist");
+
                     if (CrawlLinksAndCheckDomain(link, domain))
                     {
                         links.Add(link);
                     }    
-                }
+                // }
                 
             }
         }
@@ -101,7 +157,7 @@ public class BacklinkService
 
     public bool check_link (string link, string domain) {
         if ( link.Contains("https://") || link.Contains("http://")) {
-            if (!link.Contains(domain)) {
+            if (link.Contains(domain)) {
                 return true;
             }
         }
@@ -128,6 +184,9 @@ public class BacklinkService
         {
             string link = WebUtility.HtmlDecode(linkNode.GetAttributeValue("href", ""));
 
+            Console.WriteLine($"checked link>>>> {link}");
+
+
             if (check_link(link, domain)) {
                 return true;
             }
@@ -135,9 +194,9 @@ public class BacklinkService
 
         return false;
     }
-    
 }
 
+// LinksController.cs
 [ApiController]
 [Route("api/[controller]")]
 public class LinksController : ControllerBase
@@ -159,26 +218,55 @@ public class LinksController : ControllerBase
         string? domain = domainElement.ValueKind != JsonValueKind.Undefined ? domainElement.GetString():null;
         Console.WriteLine($"domain>>>, {domain}");
 
+        // LinkCrawler crawler = new LinkCrawler();
+
+        // List<string> links = crawler.CrawlLinks(domain ?? "");
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        // Console.WriteLine($"backlinks>>>>>  {links}");
+
+        // var retriever = new BacklinkRetriever();
+        // string links = await retriever.GetBacklinks(domain ?? "");
+
+        //////////////////////////////////////////////////////////////////////////////////////////////
+        
+        // var backlinkService = new BacklinkService();
+
+        // List<string> links = await backlinkService.GetBacklinks(domain ?? "");
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////
+
+        // var googleSearchService = new GoogleSearchService();
+
+        // List<string> links = await googleSearchService.Search(domain ?? "");
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////
+
+        
+
+        // string links = "hello";
+        // save_Backlink(links, domain);
         //////////////////////////////////////////////////////////////////////////////////////////////////
         // string apiKey = "AIzaSyCqY41oLU4KL9JBIPsZyFF4W9A00WmlKsI";
-        // string apiKey = "AIzaSyA7Wjaou1T0xe8SF3DB3Xf8GBCrZI58KTs";
-        string apiKey = "AIzaSyDK_BNn-W6zDYg4D1Jy-0mMQvR-hHDJTPA"; // rulsan
-        // string apiKey = "AIzaSyCT1V7L8cqWwlaq4t9Z7xvv0bEWPl4TV7M";
+        string apiKey = "AIzaSyDK_BNn-W6zDYg4D1Jy-0mMQvR-hHDJTPA";
         // string searchEngineId = "d61f36940c5cf411e";
-        // string searchEngineId = "d559b097134a245aa";
-        string searchEngineId = "7559c0c631de64c8a";  //ruslan
+        string searchEngineId = "7559c0c631de64c8a";
         var backlinkService = new BacklinkService();
-        List<string> links = await backlinkService.GetBacklinks( domain, searchEngineId, apiKey);
+        List<string> links = await backlinkService.GetBacklinks10( domain, searchEngineId, apiKey);
         //////////////////////////////////////////////////////////////////////////////////////////////////    
 
         if (links.Count > 0)
         {
+            
             save_Backlink(links, domain);    
         }
         return Ok(links);
+        // return Ok();
     }
 
     public async void save_Backlink(List<string> links, string domain) {
+    // public async void save_Backlink(string links, string domain1) {
 
         DateTime current_time = DateTime.Now;
 
@@ -211,7 +299,8 @@ public class LinksController : ControllerBase
         await connection.CloseAsync();
         
     }
-   
+
+    
 }
 
 
