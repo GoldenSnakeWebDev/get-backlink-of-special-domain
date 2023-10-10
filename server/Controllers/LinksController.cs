@@ -8,7 +8,6 @@ using System.Data;
 using System.Reflection.Metadata;
 using System.Runtime.InteropServices;
 using Microsoft.AspNetCore.Mvc;
-// LinkCrawler.cs
 using HtmlAgilityPack;
 using System.Net;
 using System;
@@ -28,13 +27,14 @@ public class BacklinkService
     {
         var backlinks = new List<string>();
         var googleSearchResult = new List<string>();
-        // List<string> googleSearchResult;
         int start = 1;
         int numResults = 100; // Set the number of results you want to retrieve
 
         while (backlinks.Count < numResults)
         {
-            var apiUrl = $"https://customsearch.googleapis.com/customsearch/v1?cx={cx}&key={apikey}&q=link:{domain}&start={start}";
+            // var apiUrl = $"https://customsearch.googleapis.com/customsearch/v1/siterestrict?cx={cx}&key={apikey}&q=link:{domain}&start={start}";
+            var apiUrl = $"https://customsearch.googleapis.com/customsearch/v1/?cx={cx}&key={apikey}&q=link:{domain}&start={start}";
+
             HttpClient httpClient = new HttpClient();
             var response = await httpClient.GetStringAsync(apiUrl);
 
@@ -76,8 +76,6 @@ public class BacklinkService
         var links = new List<string>();
 
         Console.WriteLine($"filter okay???? {searchResult}");
-
-
 
         foreach (var link in searchResult)
         {
@@ -140,7 +138,6 @@ public class BacklinkService
     
 }
 
-// LinksController.cs
 [ApiController]
 [Route("api/[controller]")]
 public class LinksController : ControllerBase
@@ -162,54 +159,26 @@ public class LinksController : ControllerBase
         string? domain = domainElement.ValueKind != JsonValueKind.Undefined ? domainElement.GetString():null;
         Console.WriteLine($"domain>>>, {domain}");
 
-        // LinkCrawler crawler = new LinkCrawler();
-
-        // List<string> links = crawler.CrawlLinks(domain ?? "");
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        // Console.WriteLine($"backlinks>>>>>  {links}");
-
-        // var retriever = new BacklinkRetriever();
-        // string links = await retriever.GetBacklinks(domain ?? "");
-
-        //////////////////////////////////////////////////////////////////////////////////////////////
-        
-        // var backlinkService = new BacklinkService();
-
-        // List<string> links = await backlinkService.GetBacklinks(domain ?? "");
-
-        //////////////////////////////////////////////////////////////////////////////////////////////////
-
-        // var googleSearchService = new GoogleSearchService();
-
-        // List<string> links = await googleSearchService.Search(domain ?? "");
-
-        //////////////////////////////////////////////////////////////////////////////////////////////////
-
-        
-
-        // string links = "hello";
-        // save_Backlink(links, domain);
         //////////////////////////////////////////////////////////////////////////////////////////////////
         // string apiKey = "AIzaSyCqY41oLU4KL9JBIPsZyFF4W9A00WmlKsI";
-        string apiKey = "AIzaSyCT1V7L8cqWwlaq4t9Z7xvv0bEWPl4TV7M";
-        string searchEngineId = "d61f36940c5cf411e";
+        // string apiKey = "AIzaSyA7Wjaou1T0xe8SF3DB3Xf8GBCrZI58KTs";
+        string apiKey = "AIzaSyDK_BNn-W6zDYg4D1Jy-0mMQvR-hHDJTPA"; // rulsan
+        // string apiKey = "AIzaSyCT1V7L8cqWwlaq4t9Z7xvv0bEWPl4TV7M";
+        // string searchEngineId = "d61f36940c5cf411e";
+        // string searchEngineId = "d559b097134a245aa";
+        string searchEngineId = "7559c0c631de64c8a";  //ruslan
         var backlinkService = new BacklinkService();
         List<string> links = await backlinkService.GetBacklinks( domain, searchEngineId, apiKey);
         //////////////////////////////////////////////////////////////////////////////////////////////////    
 
         if (links.Count > 0)
         {
-            
             save_Backlink(links, domain);    
         }
         return Ok(links);
-        // return Ok();
     }
 
     public async void save_Backlink(List<string> links, string domain) {
-    // public async void save_Backlink(string links, string domain1) {
 
         DateTime current_time = DateTime.Now;
 
@@ -242,8 +211,7 @@ public class LinksController : ControllerBase
         await connection.CloseAsync();
         
     }
-
-    
+   
 }
 
 
