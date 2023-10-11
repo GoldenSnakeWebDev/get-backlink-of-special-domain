@@ -1,3 +1,4 @@
+using System.Security.AccessControl;
 using System.Reflection.Emit;
 using System.Net.Mail;
 using System.Collections.Generic;
@@ -18,7 +19,7 @@ using MySql.Data.MySqlClient;
 using System.Net.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-
+using System.Text.RegularExpressions;
 
 namespace server.Controllers;
 
@@ -73,14 +74,46 @@ public class LinkCrawler
 
 public class BacklinkService
 {
+    public async Task<List<string>> GetBacklinks11(string domain, string cx, string apikey) {
+
+        var backlinks = new List<string>();
+
+        // Create HttpClient instance
+        HttpClient httpClient = new HttpClient();
+
+        // Send GET request to Google search page
+        string googleUrl = $"https://www.google.com/search?q={Uri.EscapeDataString(domain)}";
+        var html = await httpClient.GetStringAsync(googleUrl);
+
+        Console.WriteLine($"okay>>>> {html}");
+
+        // Read the content of the response
+        // string htmlContent = await response.Content.ReadAsStringAsync();
+
+        // // Parse the HTML using HtmlAgilityPack
+        // HtmlDocument htmlDocument = new HtmlDocument();
+        // htmlDocument.LoadHtml(htmlContent);
+
+        // // Extract the search results
+        // var resultNodes = htmlDocument.DocumentNode.SelectNodes("//div[@class='g']");
+        // foreach (var resultNode in resultNodes)
+        // {
+        //     string title = resultNode.SelectSingleNode(".//h3")?.InnerText.Trim();
+        //     string url = resultNode.SelectSingleNode(".//a")?.GetAttributeValue("href", "");
+        //     Console.WriteLine($"Title: {title}");
+        //     Console.WriteLine($"URL: {url}");
+        // }
+
+        return backlinks;
+    }
    
-    public async Task<List<string>> GetBacklinks10(string domain, string cx, string apikey)
+    public async Task<List<string>> GetBacklinks(string domain, string cx, string apikey)
     {
         var backlinks = new List<string>();
         var googleSearchResult = new List<string>();
 
         int start = 1;
-        int numResults = 10;
+        int numResults = 100;
 
         while (backlinks.Count < numResults)
         {
@@ -94,7 +127,8 @@ public class BacklinkService
             foreach (var item in jResponse["items"])
             {
                 string link = item["link"].ToString();
-                googleSearchResult.Add(link);
+
+                googleSearchResult.Add(pickDomainFromURL(link));
             }
 
             if (jResponse["queries"]["nextPage"] == null)
@@ -118,9 +152,10 @@ public class BacklinkService
             Console.WriteLine(link);
         }
 
-        backlinks = await filterSearchResult(googleSearchResult, domain);
+        // backlinks = await filterSearchResult(googleSearchResult, domain);
 
-        return backlinks;
+        // return backlinks;
+        return googleSearchResult;
     }
     
     public async Task<List<string>> filterSearchResult(List<string> searchResult, string domain) {
@@ -172,25 +207,59 @@ public class BacklinkService
         return false;
     }
 
+    public string pickDomainFromURL(string URL) {
+        Regex regex = new Regex("(https?://)(www\\.)?([a-zA-Z0-9.-]+)");
+        Match match = regex.Match(URL);
+        
+        if (match.Success)
+        {
+            string domain = match.Groups[3].Value;
+
+            return domain;
+            // Console.WriteLine(domain);
+        }
+        return URL;
+    }
+
     public bool CrawlLinksAndCheckDomain(string URL, string domain)
     {
         var links = new List<string>();
 
+        string gotenDoamin = pickDomainFromURL(URL);
+
+        string fulldomain = $"http://{gotenDoamin}";
+
+        Console.WriteLine($"full domain>>>> {fulldomain}");
+
         HtmlWeb web = new HtmlWeb();
 
-        HtmlDocument doc = web.Load(URL);
+        Console.WriteLine($"okay? >>> {fulldomain}");
+        Console.WriteLine($"okay? >>> {domain}");
 
-        foreach (HtmlNode linkNode in doc.DocumentNode.SelectNodes("//a[@href]"))
+        try
         {
-            string link = WebUtility.HtmlDecode(linkNode.GetAttributeValue("href", ""));
+            HtmlDocument doc = web.Load(fulldomain);
+        
+            Console.WriteLine($"okay? >>> {fulldomain}");
+            
+            foreach (HtmlNode linkNode in doc.DocumentNode.SelectNodes("//a[@href]"))
+            {
+                string link = WebUtility.HtmlDecode(linkNode.GetAttributeValue("href", ""));
 
-            Console.WriteLine($"checked link>>>> {link}");
+                Console.WriteLine($"checked link>>>> {link}");
 
 
-            if (check_link(link, domain)) {
-                return true;
+                if (check_link(link, domain)) {
+                    return true;
+                }
             }
         }
+        catch (Exception ex)
+        {
+            
+            Console.WriteLine($"An error occurred: {ex.Message}");        
+        }
+        
 
         return false;
     }
@@ -218,12 +287,14 @@ public class LinksController : ControllerBase
         Console.WriteLine($"domain>>>, {domain}");
 
         //////////////////////////////////////////////////////////////////////////////////////////////////
-        // string apiKey = "AIzaSyCqY41oLU4KL9JBIPsZyFF4W9A00WmlKsI";
-        string apiKey = "AIzaSyDK_BNn-W6zDYg4D1Jy-0mMQvR-hHDJTPA";
-        // string searchEngineId = "d61f36940c5cf411e";
-        string searchEngineId = "7559c0c631de64c8a";
+        string apiKey = "AIzaSyCqY41oLU4KL9JBIPsZyFF4W9A00WmlKsI";
+        // string apiKey = "AIzaSyDK_BNn-W6zDYg4D1Jy-0mMQvR-hHDJTPA";
+        string searchEngineId = "d61f36940c5cf411e";
+        // string searchEngineId = "7559c0c631de64c8a";
         var backlinkService = new BacklinkService();
-        List<string> links = await backlinkService.GetBacklinks10( domain, searchEngineId, apiKey);
+        // List<string> links = await backlinkService.GetBacklinks10( domain, searchEngineId, apiKey);
+        List<string> links = await backlinkService.GetBacklinks( domain, searchEngineId, apiKey);
+
         //////////////////////////////////////////////////////////////////////////////////////////////////    
 
         if (links.Count > 0)

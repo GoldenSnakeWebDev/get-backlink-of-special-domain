@@ -179,7 +179,7 @@ function LandingPage () {
 
             <div className='past_work'>
               <div >
-                <p style={{margin:'0', fontSize:'20px', fontWeight:'500'}}>past work</p>
+                <p style={{margin:'0', fontSize:'20px', fontWeight:'500'}}>Previous work</p>
               </div>
               <div>
 
