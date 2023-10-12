@@ -35,29 +35,62 @@ public class LinkCrawler
     {
         var links = new List<string>();
 
-        string url = $"http://{domain}"; // Create the URL to crawl
+        LinkCrawler crawler = new();
 
-        Console.WriteLine($"url>>>> {url}");
+        var URI = "";
 
-        HtmlWeb web = new HtmlWeb();
-            Console.WriteLine("oka!");
+        if (!crawler.IsCorrectURI(domain?? "")) {
+            URI = ConvertToURI(domain ?? "");
+        }
+        else {
+            URI = domain;
+        }
+        // string url = $"http://{domain}"; // Create the URL to crawl
 
-        HtmlDocument doc = web.Load(url);
+        // Console.WriteLine($"url>>>> {url}");
 
-            Console.WriteLine("oka!");
-        foreach (HtmlNode linkNode in doc.DocumentNode.SelectNodes("//a[@href]"))
+        try
         {
-            string link = WebUtility.HtmlDecode(linkNode.GetAttributeValue("href", ""));
+            HtmlWeb web = new();
 
-            if (Check_link(link, domain)) {
-                if (!Check_existing(links, link)) {
+            HtmlDocument doc = web.Load(URI);   
 
-                    links.Add(link);
+            foreach (HtmlNode linkNode in doc.DocumentNode.SelectNodes("//a[@href]"))
+            {
+                string link = WebUtility.HtmlDecode(linkNode.GetAttributeValue("href", ""));
+
+                if (Check_link(link, domain ?? "")) {
+                    if (!Check_existing(links, link)) {
+
+                        links.Add(link);
+                    }
                 }
             }
+
+            
+        }
+        catch (System.Exception)
+        {
+            throw;
         }
 
         return links;
+        
+    }
+
+    public bool IsCorrectURI(string domain)
+    {
+        return Uri.IsWellFormedUriString(domain, UriKind.Absolute);
+    }
+    public string ConvertToURI(string domain)
+    {
+        UriBuilder builder = new UriBuilder
+        {
+            Scheme = "https",
+            Host = domain
+        };
+        
+        return builder.Uri.ToString();
     }
 
     public bool Check_link (string link, string domain) {
@@ -371,16 +404,31 @@ public class LinksController : ControllerBase
         string? domain = domainElement.ValueKind != JsonValueKind.Undefined ? domainElement.GetString():null;
         Console.WriteLine($"domain>>>, {domain}");
 
+        List<string> links = new()
+        {
+            domain ?? ""
+        };
+
         var crawler = new LinkCrawler();
-        List<string> links =  crawler.CrawlLinks(domain ?? "");
+        var count_Backlink = 0;
+        do {
+            List<string> templinks  = crawler.CrawlLinks(links[0]);
+            foreach (var link in templinks) {
+                if (!crawler.Check_existing(links, link)) {
+                    links.Add(link);
+                }
+            }
+
+        } while(links.Count > count_Backlink);
+        // List<string> links =  crawler.CrawlLinks(domain ?? "");
         //////////////////////////////////////////////////////////////////////////////////////////////////
         // string apiKey = "AIzaSyCqY41oLU4KL9JBIPsZyFF4W9A00WmlKsI";
         // string apiKey = "AIzaSyDK_BNn-W6zDYg4D1Jy-0mMQvR-hHDJTPA";
-        string apiKey = "AIzaSyAWp2AFSPxOxcPeJGB6iddHqHwPayphJDg";
+        // string apiKey = "AIzaSyAWp2AFSPxOxcPeJGB6iddHqHwPayphJDg";
         // string searchEngineId = "d61f36940c5cf411e";
         // string searchEngineId = "7559c0c631de64c8a";
-        string searchEngineId = "e6b0fb4939f2c4b50";
-        var backlinkService = new BacklinkService();
+        // string searchEngineId = "e6b0fb4939f2c4b50";
+        // var backlinkService = new BacklinkService();
         // List<string> links = await backlinkService.GetBacklinks10( domain, searchEngineId, apiKey);
         // List<string> links = await backlinkService.GetBacklinks( domain ?? "", searchEngineId, apiKey);
 
@@ -400,7 +448,8 @@ public class LinksController : ControllerBase
         // }
         // return Ok(links);
 
-        return Ok(links);
+        return await Task.FromResult(Ok(links));
+        // return Ok(links);
     }
 
     public async void Save_Backlink(List<string> links, string domain) {
