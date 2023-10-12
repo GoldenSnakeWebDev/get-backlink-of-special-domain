@@ -188,7 +188,7 @@ function LandingPage () {
                   {domains.map((domain) => {
                     return (
 
-                      <li style={{cursor:'pointer', textAlign:'left', marginTop:'5px', marginBottom:'5px'}} onClick={getExistedBacklink}>{domain}</li>
+                      <li style={{cursor:'pointer', textAlign:'left', marginTop:'5px', marginBottom:'5px', overflowWrap:'anywhere'}} onClick={getExistedBacklink}>{domain}</li>
                     )
                   })}
                 </ol>

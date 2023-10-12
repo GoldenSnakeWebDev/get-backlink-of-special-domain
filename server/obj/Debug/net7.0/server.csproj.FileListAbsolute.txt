@@ -66,3 +66,9 @@ D:\Development\Dot net\backlink\Backlink\server\bin\Debug\net7.0\runtimes\win\li
 D:\Development\Dot net\backlink\Backlink\server\bin\Debug\net7.0\Newtonsoft.Json.dll
 D:\Development\Dot net\backlink\Backlink\server\bin\Debug\net7.0\Google.Apis.dll
 D:\Development\Dot net\backlink\Backlink\server\bin\Debug\net7.0\Google.Apis.Core.dll
+D:\Development\Dot net\backlink\Backlink\server\bin\Debug\net7.0\Abot2.dll
+D:\Development\Dot net\backlink\Backlink\server\bin\Debug\net7.0\AngleSharp.dll
+D:\Development\Dot net\backlink\Backlink\server\bin\Debug\net7.0\NRobotsCore.dll
+D:\Development\Dot net\backlink\Backlink\server\bin\Debug\net7.0\Serilog.dll
+D:\Development\Dot net\backlink\Backlink\server\bin\Debug\net7.0\Serilog.Enrichers.Thread.dll
+D:\Development\Dot net\backlink\Backlink\server\bin\Debug\net7.0\Serilog.Sinks.Console.dll

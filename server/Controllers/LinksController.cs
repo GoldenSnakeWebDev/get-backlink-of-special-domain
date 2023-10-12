@@ -20,6 +20,12 @@ using System.Net.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Text.RegularExpressions;
+using System;
+using System.Threading.Tasks;
+using Abot2.Core;
+using Abot2.Crawler;
+using Abot2.Poco;
+using Serilog;
 
 namespace server.Controllers;
 
@@ -43,8 +49,8 @@ public class LinkCrawler
         {
             string link = WebUtility.HtmlDecode(linkNode.GetAttributeValue("href", ""));
 
-            if (check_link(link, domain)) {
-                if (!check_existing(links, link)) {
+            if (Check_link(link, domain)) {
+                if (!Check_existing(links, link)) {
 
                     links.Add(link);
                 }
@@ -54,7 +60,7 @@ public class LinkCrawler
         return links;
     }
 
-    public bool check_link (string link, string domain) {
+    public bool Check_link (string link, string domain) {
         if ( link.Contains("https://") || link.Contains("http://")) {
             if (!link.Contains(domain)) {
                 return true;
@@ -64,7 +70,7 @@ public class LinkCrawler
         return false;
     }
 
-    public bool check_existing (List<string> links, string link) {
+    public bool Check_existing (List<string> links, string link) {
         if (links.Contains(link)) {
             return true;
         }
@@ -152,14 +158,15 @@ public class BacklinkService
             Console.WriteLine(link);
         }
 
-        // backlinks = await filterSearchResult(googleSearchResult, domain);
+        // backlinks = await FilterSearchResult(googleSearchResult, domain);
 
         // return backlinks;
         return googleSearchResult;
     }
-    
-    public async Task<List<string>> filterSearchResult(List<string> searchResult, string domain) {
-        
+
+    public List<string> FilterSearchResult(List<string> searchResult, string domain)
+    {
+
         var links = new List<string>();
 
         Console.WriteLine($"filter okay???? {searchResult}");
@@ -169,20 +176,20 @@ public class BacklinkService
 
             Console.WriteLine($"filter link>> {link}");
 
-            if (!check_link(link, domain))
+            if (!Check_link(link, domain))
             {
                 Console.WriteLine("checked link");
 
-                // if (!check_existing(searchResult, link))
+                // if (!Check_existing(searchResult, link))
                 // {
-                    // Console.WriteLine("don't exist");
+                // Console.WriteLine("don't exist");
 
-                    if (CrawlLinksAndCheckDomain(link, domain))
-                    {
-                        links.Add(link);
-                    }    
+                if (CrawlLinksAndCheckDomain(link, domain))
+                {
+                    links.Add(link);
+                }
                 // }
-                
+
             }
         }
 
@@ -190,7 +197,7 @@ public class BacklinkService
 
     }
 
-    public bool check_link (string link, string domain) {
+    public bool Check_link (string link, string domain) {
         if ( link.Contains("https://") || link.Contains("http://")) {
             if (link.Contains(domain)) {
                 return true;
@@ -200,7 +207,7 @@ public class BacklinkService
         return false;
     }
 
-    public bool check_existing (List<string> links, string link) {
+    public bool Check_existing (List<string> links, string link) {
         if (links.Contains(link)) {
             return true;
         }
@@ -249,7 +256,7 @@ public class BacklinkService
                 Console.WriteLine($"checked link>>>> {link}");
 
 
-                if (check_link(link, domain)) {
+                if (Check_link(link, domain)) {
                     return true;
                 }
             }
@@ -265,6 +272,84 @@ public class BacklinkService
     }
 }
 
+public class TestAbotUse {
+    // static async Task Main(string[] args)
+    // {
+    //     Log.Logger = new LoggerConfiguration()
+    //         .MinimumLevel.Information()
+    //         .WriteTo.Console()
+    //         .CreateLogger();
+
+    //     Log.Logger.Information("Demo starting up!");
+
+    //     await DemoSimpleCrawler("http://google.com");
+    //     await DemoSinglePageRequest();
+    // }
+
+    public string ConvertToURI(string domain)
+    {
+        UriBuilder builder = new UriBuilder
+        {
+            Scheme = "https",
+            Host = domain
+        };
+        
+        return builder.Uri.ToString();
+    }
+
+    public bool IsCorrectURI(string domain)
+    {
+        return Uri.IsWellFormedUriString(domain, UriKind.Absolute);
+    }
+
+    public static async Task DemoSimpleCrawler(string domain)
+    {
+        var config = new CrawlConfiguration
+        {
+            MaxPagesToCrawl = 10, //Only crawl 10 pages
+            MinCrawlDelayPerDomainMilliSeconds = 3000 //Wait this many millisecs between requests
+        };
+        var crawler = new PoliteWebCrawler(config);
+
+        crawler.PageCrawlCompleted += PageCrawlCompleted!;//Several events available...
+
+        TestAbotUse testAbotUse = new TestAbotUse();
+        string uri;
+        if (!testAbotUse.IsCorrectURI(domain)) {
+            uri = testAbotUse.ConvertToURI(domain);
+            Console.WriteLine($"uri>>>>>> {uri}");
+        }
+        else {
+            uri = domain;
+        }
+
+
+        var crawlResult = await crawler.CrawlAsync(new Uri(uri));
+
+        Console.WriteLine(Convert.ToInt32(crawlResult.CrawlContext.CrawlCountByDomain));
+    }
+
+    public static async Task DemoSinglePageRequest()
+    {
+        var pageRequester = new PageRequester(new CrawlConfiguration(), new WebContentExtractor());
+
+        var crawledPage = await pageRequester.MakeRequestAsync(new Uri("http://google.com"));
+        Log.Logger.Information("{result}", new
+        {
+            url = crawledPage.Uri,
+
+            status = Convert.ToInt32(crawledPage.HttpResponseMessage.StatusCode)
+        });
+    }
+
+    private static void PageCrawlCompleted(object sender, PageCrawlCompletedArgs e)
+    {
+        var httpStatus = e.CrawledPage.HttpResponseMessage.StatusCode;
+        var rawPageText = e.CrawledPage.Content.Text;
+
+        Console.WriteLine($"page text >>>> {rawPageText}");
+    }
+}
 [ApiController]
 [Route("api/[controller]")]
 public class LinksController : ControllerBase
@@ -286,30 +371,41 @@ public class LinksController : ControllerBase
         string? domain = domainElement.ValueKind != JsonValueKind.Undefined ? domainElement.GetString():null;
         Console.WriteLine($"domain>>>, {domain}");
 
+        var crawler = new LinkCrawler();
+        List<string> links =  crawler.CrawlLinks(domain ?? "");
         //////////////////////////////////////////////////////////////////////////////////////////////////
-        string apiKey = "AIzaSyCqY41oLU4KL9JBIPsZyFF4W9A00WmlKsI";
+        // string apiKey = "AIzaSyCqY41oLU4KL9JBIPsZyFF4W9A00WmlKsI";
         // string apiKey = "AIzaSyDK_BNn-W6zDYg4D1Jy-0mMQvR-hHDJTPA";
-        string searchEngineId = "d61f36940c5cf411e";
+        string apiKey = "AIzaSyAWp2AFSPxOxcPeJGB6iddHqHwPayphJDg";
+        // string searchEngineId = "d61f36940c5cf411e";
         // string searchEngineId = "7559c0c631de64c8a";
+        string searchEngineId = "e6b0fb4939f2c4b50";
         var backlinkService = new BacklinkService();
         // List<string> links = await backlinkService.GetBacklinks10( domain, searchEngineId, apiKey);
-        List<string> links = await backlinkService.GetBacklinks( domain, searchEngineId, apiKey);
+        // List<string> links = await backlinkService.GetBacklinks( domain ?? "", searchEngineId, apiKey);
 
         //////////////////////////////////////////////////////////////////////////////////////////////////    
+        
+        // var testAbotUse = new TestAbotUse();
 
-        if (links.Count > 0)
-        {
+        // await TestAbotUse.DemoSimpleCrawler(domain ?? "");
+
+        // await TestAbotUse.DemoSinglePageRequest();
+
+
+        // if (links.Count > 0)
+        // {
             
-            save_Backlink(links, domain);    
-        }
+        //     Save_Backlink(links, domain ?? "");    
+        // }
+        // return Ok(links);
+
         return Ok(links);
     }
 
-    public async void save_Backlink(List<string> links, string domain) {
+    public async void Save_Backlink(List<string> links, string domain) {
 
         DateTime current_time = DateTime.Now;
-
-        string connectionString = "server=localhost;userid=root;password=;database=backlink";
 
         using var connection = new MySqlConnection("server=localhost;userid=root;password=;database=backlink");
 
