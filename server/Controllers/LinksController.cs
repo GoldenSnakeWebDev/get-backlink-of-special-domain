@@ -39,40 +39,49 @@ public class LinkCrawler
 
         var URI = "";
 
+        if (IgnoreDomain(domain)) {
+            Console.WriteLine("ignore>>>.");
+            return links;
+        }
+
         if (!crawler.IsCorrectURI(domain?? "")) {
+
             URI = ConvertToURI(domain ?? "");
         }
         else {
             URI = domain;
         }
+
         // string url = $"http://{domain}"; // Create the URL to crawl
 
-        // Console.WriteLine($"url>>>> {url}");
+        Console.WriteLine($"url>>>> {URI}");
 
         try
         {
             HtmlWeb web = new();
 
-            HtmlDocument doc = web.Load(URI);   
+            HtmlDocument doc = web.Load(URI);
 
             foreach (HtmlNode linkNode in doc.DocumentNode.SelectNodes("//a[@href]"))
             {
                 string link = WebUtility.HtmlDecode(linkNode.GetAttributeValue("href", ""));
 
-                if (Check_link(link, domain ?? "")) {
-                    if (!Check_existing(links, link)) {
-
-                        links.Add(link);
+                if (Check_link(link, domain ?? ""))
+                {
+                    if (!Check_existing(links, link))
+                    {
+                        links.Add(PickDomainFromURL(link));
                     }
                 }
             }
 
-            
         }
         catch (System.Exception)
         {
-            throw;
+            Console.WriteLine("An error occurred:");
+            // Handle any other exceptions that might occur during the execution of the code
         }
+
 
         return links;
         
@@ -80,17 +89,53 @@ public class LinkCrawler
 
     public bool IsCorrectURI(string domain)
     {
-        return Uri.IsWellFormedUriString(domain, UriKind.Absolute);
+        if (domain.Contains("https://") || domain.Contains("http://")) {
+            return true;
+        }
+
+        return false;
     }
     public string ConvertToURI(string domain)
     {
-        UriBuilder builder = new UriBuilder
-        {
-            Scheme = "https",
-            Host = domain
-        };
+        string URI = $"http://{domain}";
         
-        return builder.Uri.ToString();
+        return URI;
+    }
+
+    private bool IgnoreDomain(string domain) {
+        List<string> IgnoreDomain = new (
+            new []
+            {
+            "facebook.com",
+            "linkedin.com",
+            "twitter.com",
+            "youtube.com",
+            "skype.com",
+            "instagram.com",
+            "discord.com",
+            "slack.com",
+            "whatsapp.com",}
+        );
+
+        if (IgnoreDomain.Contains(domain)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public string PickDomainFromURL(string URL) {
+        Regex regex = new Regex("(https?://)(www\\.)?([a-zA-Z0-9.-]+)");
+        Match match = regex.Match(URL);
+        
+        if (match.Success)
+        {
+            string domain = match.Groups[3].Value;
+
+            return domain;
+            // Console.WriteLine(domain);
+        }
+        return URL;
     }
 
     public bool Check_link (string link, string domain) {
@@ -410,16 +455,17 @@ public class LinksController : ControllerBase
         };
 
         var crawler = new LinkCrawler();
-        var count_Backlink = 0;
+        var index = 0;
         do {
-            List<string> templinks  = crawler.CrawlLinks(links[0]);
+            List<string> templinks  = crawler.CrawlLinks(links[index]);
             foreach (var link in templinks) {
                 if (!crawler.Check_existing(links, link)) {
                     links.Add(link);
                 }
             }
 
-        } while(links.Count > count_Backlink);
+            index ++;
+        } while(links.Count > index && links.Count < 1000);
         // List<string> links =  crawler.CrawlLinks(domain ?? "");
         //////////////////////////////////////////////////////////////////////////////////////////////////
         // string apiKey = "AIzaSyCqY41oLU4KL9JBIPsZyFF4W9A00WmlKsI";
@@ -441,12 +487,12 @@ public class LinksController : ControllerBase
         // await TestAbotUse.DemoSinglePageRequest();
 
 
-        // if (links.Count > 0)
-        // {
+        if (links.Count > 0)
+        {
             
-        //     Save_Backlink(links, domain ?? "");    
-        // }
-        // return Ok(links);
+            Save_Backlink(links, domain ?? "");    
+        }
+        return Ok(links);
 
         return await Task.FromResult(Ok(links));
         // return Ok(links);
