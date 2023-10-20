@@ -26,6 +26,7 @@ using Abot2.Core;
 using Abot2.Crawler;
 using Abot2.Poco;
 using Serilog;
+using System.IO.FileSystem
 
 namespace server.Controllers;
 
@@ -156,278 +157,6 @@ public class LinkCrawler
     }
 }
 
-public class BacklinkService
-{
-    public async Task<List<string>> GetBacklinks11(string domain, string cx, string apikey) {
-
-        var backlinks = new List<string>();
-
-        // Create HttpClient instance
-        HttpClient httpClient = new HttpClient();
-
-        // Send GET request to Google search page
-        string googleUrl = $"https://www.google.com/search?q={Uri.EscapeDataString(domain)}";
-        var html = await httpClient.GetStringAsync(googleUrl);
-
-        Console.WriteLine($"okay>>>> {html}");
-
-        // Read the content of the response
-        // string htmlContent = await response.Content.ReadAsStringAsync();
-
-        // // Parse the HTML using HtmlAgilityPack
-        // HtmlDocument htmlDocument = new HtmlDocument();
-        // htmlDocument.LoadHtml(htmlContent);
-
-        // // Extract the search results
-        // var resultNodes = htmlDocument.DocumentNode.SelectNodes("//div[@class='g']");
-        // foreach (var resultNode in resultNodes)
-        // {
-        //     string title = resultNode.SelectSingleNode(".//h3")?.InnerText.Trim();
-        //     string url = resultNode.SelectSingleNode(".//a")?.GetAttributeValue("href", "");
-        //     Console.WriteLine($"Title: {title}");
-        //     Console.WriteLine($"URL: {url}");
-        // }
-
-        return backlinks;
-    }
-   
-    public async Task<List<string>> GetBacklinks(string domain, string cx, string apikey)
-    {
-        var backlinks = new List<string>();
-        var googleSearchResult = new List<string>();
-
-        int start = 1;
-        int numResults = 100;
-
-        while (backlinks.Count < numResults)
-        {
-            var apiUrl =$"https://customsearch.googleapis.com/customsearch/v1?cx={cx}&key={apikey}&q={domain}&start={start}";
-            HttpClient httpClient = new HttpClient();
-            var response = await httpClient.GetStringAsync(apiUrl);
-
-            // var response = http.Request(apiUrl);
-            var jResponse = JObject.Parse(response);
-
-            foreach (var item in jResponse["items"])
-            {
-                string link = item["link"].ToString();
-
-                googleSearchResult.Add(pickDomainFromURL(link));
-            }
-
-            if (jResponse["queries"]["nextPage"] == null)
-            {
-                break; // No more results available
-            }
-
-            int nextStart = int.Parse(jResponse["queries"]["nextPage"][0]["startIndex"].ToString());
-
-            if (nextStart <= start)
-            {
-                break; // Ensure we don't get stuck in an infinite loop
-            }
-
-            start = nextStart;
-
-        }
-
-        foreach (var link in googleSearchResult)
-        {
-            Console.WriteLine(link);
-        }
-
-        // backlinks = await FilterSearchResult(googleSearchResult, domain);
-
-        // return backlinks;
-        return googleSearchResult;
-    }
-
-    public List<string> FilterSearchResult(List<string> searchResult, string domain)
-    {
-
-        var links = new List<string>();
-
-        Console.WriteLine($"filter okay???? {searchResult}");
-
-        foreach (var link in searchResult)
-        {
-
-            Console.WriteLine($"filter link>> {link}");
-
-            if (!Check_link(link, domain))
-            {
-                Console.WriteLine("checked link");
-
-                // if (!Check_existing(searchResult, link))
-                // {
-                // Console.WriteLine("don't exist");
-
-                if (CrawlLinksAndCheckDomain(link, domain))
-                {
-                    links.Add(link);
-                }
-                // }
-
-            }
-        }
-
-        return links;
-
-    }
-
-    public bool Check_link (string link, string domain) {
-        if ( link.Contains("https://") || link.Contains("http://")) {
-            if (link.Contains(domain)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public bool Check_existing (List<string> links, string link) {
-        if (links.Contains(link)) {
-            return true;
-        }
-        return false;
-    }
-
-    public string pickDomainFromURL(string URL) {
-        Regex regex = new Regex("(https?://)(www\\.)?([a-zA-Z0-9.-]+)");
-        Match match = regex.Match(URL);
-        
-        if (match.Success)
-        {
-            string domain = match.Groups[3].Value;
-
-            return domain;
-            // Console.WriteLine(domain);
-        }
-        return URL;
-    }
-
-    public bool CrawlLinksAndCheckDomain(string URL, string domain)
-    {
-        var links = new List<string>();
-
-        string gotenDoamin = pickDomainFromURL(URL);
-
-        string fulldomain = $"http://{gotenDoamin}";
-
-        Console.WriteLine($"full domain>>>> {fulldomain}");
-
-        HtmlWeb web = new HtmlWeb();
-
-        Console.WriteLine($"okay? >>> {fulldomain}");
-        Console.WriteLine($"okay? >>> {domain}");
-
-        try
-        {
-            HtmlDocument doc = web.Load(fulldomain);
-        
-            Console.WriteLine($"okay? >>> {fulldomain}");
-            
-            foreach (HtmlNode linkNode in doc.DocumentNode.SelectNodes("//a[@href]"))
-            {
-                string link = WebUtility.HtmlDecode(linkNode.GetAttributeValue("href", ""));
-
-                Console.WriteLine($"checked link>>>> {link}");
-
-
-                if (Check_link(link, domain)) {
-                    return true;
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            
-            Console.WriteLine($"An error occurred: {ex.Message}");        
-        }
-        
-
-        return false;
-    }
-}
-
-public class TestAbotUse {
-    // static async Task Main(string[] args)
-    // {
-    //     Log.Logger = new LoggerConfiguration()
-    //         .MinimumLevel.Information()
-    //         .WriteTo.Console()
-    //         .CreateLogger();
-
-    //     Log.Logger.Information("Demo starting up!");
-
-    //     await DemoSimpleCrawler("http://google.com");
-    //     await DemoSinglePageRequest();
-    // }
-
-    public string ConvertToURI(string domain)
-    {
-        UriBuilder builder = new UriBuilder
-        {
-            Scheme = "https",
-            Host = domain
-        };
-        
-        return builder.Uri.ToString();
-    }
-
-    public bool IsCorrectURI(string domain)
-    {
-        return Uri.IsWellFormedUriString(domain, UriKind.Absolute);
-    }
-
-    public static async Task DemoSimpleCrawler(string domain)
-    {
-        var config = new CrawlConfiguration
-        {
-            MaxPagesToCrawl = 10, //Only crawl 10 pages
-            MinCrawlDelayPerDomainMilliSeconds = 3000 //Wait this many millisecs between requests
-        };
-        var crawler = new PoliteWebCrawler(config);
-
-        crawler.PageCrawlCompleted += PageCrawlCompleted!;//Several events available...
-
-        TestAbotUse testAbotUse = new TestAbotUse();
-        string uri;
-        if (!testAbotUse.IsCorrectURI(domain)) {
-            uri = testAbotUse.ConvertToURI(domain);
-            Console.WriteLine($"uri>>>>>> {uri}");
-        }
-        else {
-            uri = domain;
-        }
-
-
-        var crawlResult = await crawler.CrawlAsync(new Uri(uri));
-
-        Console.WriteLine(Convert.ToInt32(crawlResult.CrawlContext.CrawlCountByDomain));
-    }
-
-    public static async Task DemoSinglePageRequest()
-    {
-        var pageRequester = new PageRequester(new CrawlConfiguration(), new WebContentExtractor());
-
-        var crawledPage = await pageRequester.MakeRequestAsync(new Uri("http://google.com"));
-        Log.Logger.Information("{result}", new
-        {
-            url = crawledPage.Uri,
-
-            status = Convert.ToInt32(crawledPage.HttpResponseMessage.StatusCode)
-        });
-    }
-
-    private static void PageCrawlCompleted(object sender, PageCrawlCompletedArgs e)
-    {
-        var httpStatus = e.CrawledPage.HttpResponseMessage.StatusCode;
-        var rawPageText = e.CrawledPage.Content.Text;
-
-        Console.WriteLine($"page text >>>> {rawPageText}");
-    }
-}
 [ApiController]
 [Route("api/[controller]")]
 public class LinksController : ControllerBase
@@ -440,7 +169,7 @@ public class LinksController : ControllerBase
     public async Task<IActionResult> PostAsync([FromBody] dynamic input)
     {
 
-        Console.WriteLine("start>>>>");
+        Console.WriteLine($"start>>>>, {input}");
 
         JsonDocument  jsonDoc = JsonDocument.Parse(input.ToString());
 
@@ -496,6 +225,10 @@ public class LinksController : ControllerBase
 
         return await Task.FromResult(Ok(links));
         // return Ok(links);
+    }
+
+    public List<string> CrawlLinks(string domain) {
+
     }
 
     public async void Save_Backlink(List<string> links, string domain) {

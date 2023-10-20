@@ -108,10 +108,6 @@ function LandingPage () {
       }
   }
 
-  const handle_save = () => {
-
-  }
-
   const formatTimes = (times) => {
     const formattedTimes = times.map(time => {
       const formattedTime = new Date(time).toLocaleString("en-GB", {
