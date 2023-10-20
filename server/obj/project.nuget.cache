@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "gKsIWCZiSL8Ipk/QDZ/wmS0dZqn+EzAklBdcJVGMEc49xHBaesMTYBeNTqejX/AAF+NcfYCJj0kaFjHcdgPsOA==",
+  "dgSpecHash": "wb2W9AIYT/6JIB7jhODVZKlh2mxx1LWZzKCg37ZjGIlhMgsBIaTXhJjFs58vNG0aA74NdzAmrMYNUBWCybKuNA==",
   "success": true,
   "projectFilePath": "D:\\Development\\Dot net\\backlink\\Backlink\\server\\server.csproj",
   "expectedPackageFiles": [
@@ -83,8 +83,8 @@
     "C:\\Users\\Administrator\\.nuget\\packages\\system.io\\4.3.0\\system.io.4.3.0.nupkg.sha512",
     "C:\\Users\\Administrator\\.nuget\\packages\\system.io.compression\\4.1.0\\system.io.compression.4.1.0.nupkg.sha512",
     "C:\\Users\\Administrator\\.nuget\\packages\\system.io.compression.zipfile\\4.0.1\\system.io.compression.zipfile.4.0.1.nupkg.sha512",
-    "C:\\Users\\Administrator\\.nuget\\packages\\system.io.filesystem\\4.0.1\\system.io.filesystem.4.0.1.nupkg.sha512",
-    "C:\\Users\\Administrator\\.nuget\\packages\\system.io.filesystem.primitives\\4.0.1\\system.io.filesystem.primitives.4.0.1.nupkg.sha512",
+    "C:\\Users\\Administrator\\.nuget\\packages\\system.io.filesystem\\4.3.0\\system.io.filesystem.4.3.0.nupkg.sha512",
+    "C:\\Users\\Administrator\\.nuget\\packages\\system.io.filesystem.primitives\\4.3.0\\system.io.filesystem.primitives.4.3.0.nupkg.sha512",
     "C:\\Users\\Administrator\\.nuget\\packages\\system.linq\\4.1.0\\system.linq.4.1.0.nupkg.sha512",
     "C:\\Users\\Administrator\\.nuget\\packages\\system.linq.expressions\\4.1.0\\system.linq.expressions.4.1.0.nupkg.sha512",
     "C:\\Users\\Administrator\\.nuget\\packages\\system.memory\\4.5.3\\system.memory.4.5.3.nupkg.sha512",
