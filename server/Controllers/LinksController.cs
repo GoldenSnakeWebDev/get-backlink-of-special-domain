@@ -26,6 +26,7 @@ using Abot2.Core;
 using Abot2.Crawler;
 using Abot2.Poco;
 using Serilog;
+using Microsoft.AspNetCore.SignalR;
 
 namespace server.Controllers;
 
@@ -46,8 +47,6 @@ public class LinkCrawler
         else {
             URI = domain;
         }
-
-        Console.WriteLine($"url>>>> {URI}");
 
         try
         {
@@ -165,13 +164,17 @@ public class LinksController : ControllerBase
             List<string> templinks  = crawler.CrawlLinks(link);
             foreach (var templink in templinks) {
 
+                Console.WriteLine($"link>>> {templink}");
+
                 if (crawler.Check_link(templink, domain)) {
-                    string temp = crawler.PickDomainFromURL(templink);
 
-                    if (!crawler.Check_existing(links, domain)) {
+                    // string temp = crawler.PickDomainFromURL(templink);
 
-                        Console.WriteLine($"added link>>>> {templink}");
-                        links.Add(templink);
+                    if (!crawler.Check_existing(links, link)) {
+
+                        Console.WriteLine($"added link>>>> {link}");
+                        links.Add(link);
+                        // send_backlink(templink);
                     }
                 }
             }
@@ -221,6 +224,9 @@ public class LinksController : ControllerBase
         
     }
 
+    // public async Task send_backlink(string backlink) {
+    //     await  _hubContext.Clients.All.SendAsync("links", backlink);
+    // }
     
 }
 

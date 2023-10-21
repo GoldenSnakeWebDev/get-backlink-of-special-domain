@@ -2,19 +2,25 @@ import './LandingPage.css';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import ReactLoading from 'react-loading';
+import ConfirmModal from '../Modal/Confirm.Modal';
+// import io from 'socket.io-client';
+
 function LandingPage () {
 
   const [text_userInput, setText_userInput] = useState('');
   const [backlinks, setBacklink] = useState([]);
   const [times, setTimes] = useState([]);
   const [curTime, setCurTime] = useState('2023-02-03 16:00:00');
-  const [link_exist, setLink_exist] = useState(false);
+  // const [link_exist, setLink_exist] = useState(false);
   const [loading, setLoading] = useState(false);
   const [domains, setDomains] = useState([]);
-
+  const [isExistedDomain, setIsExistedDomain] = useState(false);
+  // const [socket, setSocket] = useState(null);
+  // const [isContinue, setIsContinue] = useState(false);
+  // let isContinue = false;
   useEffect (() => {
 
-
+    
     axios({
       method: "post",
       url: `http://localhost:5131/api/ExistedDomain`,
@@ -43,29 +49,45 @@ function LandingPage () {
     const hours = String(cur_time.getHours()).padStart(2, '0');
     const minutes = String(cur_time.getMinutes()).padStart(2, '0');
     const seconds = String(cur_time.getSeconds()).padStart(2, '0');
-
+    
     const formattedTime = `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
     setCurTime(formattedTime);
 
-    if (backlinks.length>1) {
-        setLink_exist(true);
+    // if (backlinks.length>1) {
+    //     setLink_exist(true);
         
-    }
+    // }
+
+    // const newSocket = io(`http://localhost:5131/link`);
+    // setSocket(newSocket);
+    // return () => newSocket.close();
 
   }, [backlinks]) 
 
   const handle_textarea = (event) => {
     setText_userInput(event.target.value);
   }
+
+  // const backlink_Listener = (backlink) => {
+  //   console.log(backlink);
+  // }
   const handle_get = async () => {
 
     const domainContains = domains.filter(domain => domain.includes(text_userInput));
 
     if (domainContains.length > 0) {
-      alert("This domain is already checked!");
+      
+      setIsExistedDomain(true);
+      // alert("This domain is already checked!");
     } else {
+      // socket.on('links', backlink_Listener);
+      // socket.emit('get_backlink', text_userInput);
+      get_links();
+    }
+  }
 
-      setLoading(true);
+  const get_links = () => {
+    setLoading(true);
         // alert('okay');
       const text = 'hello world';
 
@@ -105,7 +127,6 @@ function LandingPage () {
         } catch (error) {
           console.error('error:', error);
         }
-      }
   }
 
   const formatTimes = (times) => {
@@ -181,10 +202,10 @@ function LandingPage () {
 
                 <ol>
 
-                  {domains.map((domain) => {
+                  {domains.map((domain, key) => {
                     return (
 
-                      <li style={{cursor:'pointer', textAlign:'left', marginTop:'5px', marginBottom:'5px', overflowWrap:'anywhere'}} onClick={getExistedBacklink}>{domain}</li>
+                      <li key={key} style={{cursor:'pointer', textAlign:'left', marginTop:'5px', marginBottom:'5px', overflowWrap:'anywhere'}} onClick={getExistedBacklink}>{domain}</li>
                     )
                   })}
                 </ol>
@@ -212,6 +233,7 @@ function LandingPage () {
               </tbody>
             </table>
 
+            {isExistedDomain && <ConfirmModal get_links ={get_links} setIsExistedDomain={setIsExistedDomain}/>}
             {/* {link_exist && <button className='saveButton' onClick={handle_save}>SAVE</button> } */}
 
           </div>

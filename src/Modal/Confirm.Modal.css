@@ -1,0 +1,26 @@
+
+.modal-border {
+    position: absolute;
+    border: 1px solid;
+    padding: 20px;
+    height: 150px;
+    top: 20%;
+    left: 38%;
+    background: white;
+    border-radius: 10px;
+}
+
+.title {
+    font-size: 20px;
+    margin-bottom: 30px;
+    margin-top: 15px
+}
+
+.button_group {
+    display: flex;
+    justify-content: space-around;
+}
+
+.button {
+    font-size: 20px;
+}

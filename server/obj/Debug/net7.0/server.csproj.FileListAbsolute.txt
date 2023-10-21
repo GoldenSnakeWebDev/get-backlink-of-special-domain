@@ -72,3 +72,4 @@ D:\Development\Dot net\backlink\Backlink\server\bin\Debug\net7.0\NRobotsCore.dll
 D:\Development\Dot net\backlink\Backlink\server\bin\Debug\net7.0\Serilog.dll
 D:\Development\Dot net\backlink\Backlink\server\bin\Debug\net7.0\Serilog.Enrichers.Thread.dll
 D:\Development\Dot net\backlink\Backlink\server\bin\Debug\net7.0\Serilog.Sinks.Console.dll
+D:\Development\Dot net\backlink\Backlink\server\bin\Debug\net7.0\System.Net.WebSockets.WebSocketProtocol.dll
