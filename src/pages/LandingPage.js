@@ -75,11 +75,12 @@ function LandingPage () {
     setUserInputedDomain(event.target.value);
   }
 
-  const backlink_Listener = (backlink) => {
+  const backlink_Listener = (backlink, cur_time) => {
     
     // updatedbacklinks.push(backlink);
     console.log("backlink>>>", backlink);
     setBacklink(prevBacklinks => [...prevBacklinks, backlink]);
+    setTimes(preTimes => [...preTimes, formatTimes(cur_time)]);
     // setBacklink([...updatedbacklinks, backlink]);
   }
 
@@ -103,26 +104,41 @@ function LandingPage () {
   }
 
   const handleProgressBar = (progress) => {
-
+    
     console.log("progress>>>>", progress);
-    setProgress(progress);
+    setProgress(progress.toFixed(2));
   }
   const get_links = () => {
 
-    updatedbacklinks = [];
+    setTimes([]);
+    setBacklink([]);
     hubconnection.invoke("Get_backlink", userInputedDomain);
     hubconnection.on('link', backlink_Listener);
     hubconnection.on('getting_end', getting_end);
     hubconnection.on('progress_bar', handleProgressBar)
     
     setLoading(true);
-    console.log('text>>>>');
   
   }
 
   const formatTimes = (times) => {
-    const formattedTimes = times.map(time => {
-      const formattedTime = new Date(time).toLocaleString("en-GB", {
+    if (Array.isArray(times)) {
+
+      const formattedTimes = times.map(time => {
+        const formattedTime = new Date(time).toLocaleString("en-GB", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit"
+        }).replace(/,/g, "");
+  
+        return formattedTime;
+      })
+      return formattedTimes;
+    } else {
+      const formattedTime = new Date(times).toLocaleString("en-GB", {
         year: "numeric",
         month: "2-digit",
         day: "2-digit",
@@ -132,10 +148,9 @@ function LandingPage () {
       }).replace(/,/g, "");
 
       return formattedTime;
+    }
 
-    })
 
-    return formattedTimes;
   }
 
   const getExistedBacklink = (event) => {

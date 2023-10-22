@@ -111,10 +111,8 @@ public class LinkCrawler
     }
 
     public bool Check_link (string link, string domain) {
-        if ( link.Contains("https://") || link.Contains("http://")) {
-            if (!link.Contains(domain)) {
-                return true;
-            }
+        if (!link.Contains(domain)) {
+            return true;
         }
 
         return false;
@@ -127,7 +125,7 @@ public class LinkCrawler
         return false;
     }
 
-    public async void Save_Backlink(List<string> links, string domain) {
+    public async void Save_Backlink(List<string> links, List<DateTime> date_times, string domain) {
 
         DateTime current_time = DateTime.Now;
 
@@ -136,24 +134,27 @@ public class LinkCrawler
         connection.Open();
 
         Console.WriteLine("save okay?");
-        MySqlCommand command = new MySqlCommand($"DELETE FROM backlinks WHERE domain = @domain;)", connection);
+        using MySqlCommand command = new MySqlCommand($"DELETE FROM backlinks WHERE domain = @domain", connection);
         command.Parameters.AddWithValue("@domain", domain);
         command.ExecuteNonQuery();
 
-        command = new MySqlCommand($"DELETE FROM domain WHERE domain = @domain;)", connection);
-        command.Parameters.AddWithValue("@domain", domain);
-        command.ExecuteNonQuery();
+        using MySqlCommand command1 = new MySqlCommand($"DELETE FROM domain WHERE domain = @domain", connection);
+        command1.Parameters.AddWithValue("@domain", domain);
+        command1.ExecuteNonQuery();
+
+        var index = 0;
 
         foreach (var link in links) {
 
-            command = new MySqlCommand($"INSERT INTO backlinks (domain, backlink, created_time) VALUES(@domain, @backlink, @created_time)", connection);
+            using MySqlCommand command3 = new MySqlCommand($"INSERT INTO backlinks (domain, backlink, created_time) VALUES(@domain, @backlink, @created_time)", connection);
 
-            command.Parameters.AddWithValue("@domain", domain);
-            command.Parameters.AddWithValue("@backlink", link);
-            command.Parameters.AddWithValue("@created_time", current_time);
+            command3.Parameters.AddWithValue("@domain", domain);
+            command3.Parameters.AddWithValue("@backlink", link);
+            command3.Parameters.AddWithValue("@created_time", date_times[index]);
 
-            command.ExecuteNonQuery();
+            command3.ExecuteNonQuery();
 
+            index ++;
         }
 
         using MySqlCommand command2 = new MySqlCommand($"INSERT INTO domain (domain) VALUES(@domain)", connection);

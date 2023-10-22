@@ -40,6 +40,7 @@ public class ExistedDomainController : ControllerBase
 
         Response.Headers.Add("Access-Control-Allow-Origin", "http://localhost:3000");
 
+        await connection.CloseAsync();
 
         return Ok(result);
     }
