@@ -4,6 +4,7 @@ import axios from 'axios';
 import ReactLoading from 'react-loading';
 import ConfirmModal from '../Modal/Confirm.Modal';
 import {HubConnectionBuilder} from '@aspnet/signalr';
+import ProgressBar from "@ramonak/react-progress-bar";
 
 function LandingPage () {
 
@@ -15,6 +16,7 @@ function LandingPage () {
   const [domains, setDomains] = useState([]);
   const [isExistedDomain, setIsExistedDomain] = useState(false);
   const [hubconnection, setHubConnection] = useState(new HubConnectionBuilder());
+  const [progress, setProgress] = useState(0);
   let updatedbacklinks = [];
   useEffect (() => {
     
@@ -96,13 +98,24 @@ function LandingPage () {
     }
   }
 
+  const getting_end = () => {
+    setLoading(false);
+  }
+
+  const handleProgressBar = (progress) => {
+
+    console.log("progress>>>>", progress);
+    setProgress(progress);
+  }
   const get_links = () => {
 
-    // setLoading(true);
     updatedbacklinks = [];
     hubconnection.invoke("Get_backlink", userInputedDomain);
     hubconnection.on('link', backlink_Listener);
-
+    hubconnection.on('getting_end', getting_end);
+    hubconnection.on('progress_bar', handleProgressBar)
+    
+    setLoading(true);
     console.log('text>>>>');
   
   }
@@ -167,7 +180,9 @@ function LandingPage () {
             <button onClick={handle_get}>GET</button>
         </div>
         
-        {loading ? <div className='loading'><ReactLoading  color='grey' type='spinningBubbles' height={'20%'} width={'20%'}/> </div>:
+        {/* {loading && <div className='loading'><ReactLoading  color='grey' type='spinningBubbles' height={'70px'} width={'70px'}/> </div>} */}
+        {loading && <div className='loading'><ProgressBar className='progress-bar' completed={progress} /> </div>}
+
 
         <div style={{display:'flex', marginTop:'30px'}}>
           <div className='sidebar'>
@@ -216,8 +231,7 @@ function LandingPage () {
 
           </div>
         </div>
-          
-        }
+      
         
       </>
     )
