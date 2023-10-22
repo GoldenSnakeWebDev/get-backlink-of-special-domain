@@ -7,13 +7,14 @@ namespace SignalR
         public async Task Get_backlink(string domain)
         {
             LinkCrawler crawler = new();
-
             List<string> links =  new();
             string[] link_lists = crawler.Get_Lists();
+
             foreach (var link in link_lists) {
                 await Clients.All.SendAsync("link", link);
 
                 List<string> templinks  = crawler.CrawlLinks(link);
+                
                 foreach (var templink in templinks) {
 
                     Console.WriteLine($"link>>> {templink}");

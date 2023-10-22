@@ -75,10 +75,10 @@ function LandingPage () {
 
   const backlink_Listener = (backlink) => {
     
-    updatedbacklinks.push(backlink);
-
-    // setBacklink(updatedbacklinks);
-    console.log("hello>>>>>", updatedbacklinks);
+    // updatedbacklinks.push(backlink);
+    console.log("backlink>>>", backlink);
+    setBacklink(prevBacklinks => [...prevBacklinks, backlink]);
+    // setBacklink([...updatedbacklinks, backlink]);
   }
 
   const handle_get = async () => {
