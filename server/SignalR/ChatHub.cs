@@ -20,7 +20,7 @@ namespace SignalR
                 
                 // await Clients.All.SendAsync("link", link, curTime);
                 index ++;
-                await Clients.All.SendAsync("progress_bar", (double)index/number_of_list * 100);
+                await Clients.Caller.SendAsync("progress_bar", (double)index/number_of_list * 100);
 
                 // links.Add(link);
                 // date_time.Add(curTime);
@@ -39,7 +39,7 @@ namespace SignalR
                         if (!crawler.Check_existing(links, link)) {
                             DateTime cur_Time = DateTime.Now;
                             Console.WriteLine($"added link>>>> {link}");
-                            await Clients.All.SendAsync("link", link, cur_Time);
+                            await Clients.Caller.SendAsync("link", link, cur_Time);
                             // await Clients.All.SendAsync("progress_bar", (int)Math.Ceiling((double)index/number_of_list * 100));
                             links.Add(link);
                             date_time.Add(cur_Time);
