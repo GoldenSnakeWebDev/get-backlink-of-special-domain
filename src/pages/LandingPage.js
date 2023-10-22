@@ -3,24 +3,40 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import ReactLoading from 'react-loading';
 import ConfirmModal from '../Modal/Confirm.Modal';
-// import io from 'socket.io-client';
+import {HubConnectionBuilder} from '@aspnet/signalr';
 
 function LandingPage () {
 
-  const [text_userInput, setText_userInput] = useState('');
+  const [userInputedDomain, setUserInputedDomain] = useState('');
   const [backlinks, setBacklink] = useState([]);
   const [times, setTimes] = useState([]);
   const [curTime, setCurTime] = useState('2023-02-03 16:00:00');
-  // const [link_exist, setLink_exist] = useState(false);
   const [loading, setLoading] = useState(false);
   const [domains, setDomains] = useState([]);
   const [isExistedDomain, setIsExistedDomain] = useState(false);
-  // const [socket, setSocket] = useState(null);
-  // const [isContinue, setIsContinue] = useState(false);
-  // let isContinue = false;
+  const [hubconnection, setHubConnection] = useState(new HubConnectionBuilder());
+  let updatedbacklinks = [];
   useEffect (() => {
-
     
+    get_existed_domain();
+
+    const newhubconnection = new HubConnectionBuilder()
+    .withUrl('http://localhost:5131/chathub')
+    .build();
+
+    newhubconnection.start()
+    .then(() => {
+      console.log("Connected to the ChatHub. really?");
+    })
+    .catch(error => {
+      console.log("error is occured:>>>", error);
+    });
+    
+    setHubConnection(newhubconnection);
+
+  }, []) 
+
+  const get_existed_domain = () => {
     axios({
       method: "post",
       url: `http://localhost:5131/api/ExistedDomain`,
@@ -40,7 +56,6 @@ function LandingPage () {
         }
     })
 
-
     const cur_time = new Date();
 
     const year = cur_time.getFullYear();
@@ -53,80 +68,43 @@ function LandingPage () {
     const formattedTime = `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
     setCurTime(formattedTime);
 
-    // if (backlinks.length>1) {
-    //     setLink_exist(true);
-        
-    // }
-
-    // const newSocket = io(`http://localhost:5131/link`);
-    // setSocket(newSocket);
-    // return () => newSocket.close();
-
-  }, [backlinks]) 
-
+  }
   const handle_textarea = (event) => {
-    setText_userInput(event.target.value);
+    setUserInputedDomain(event.target.value);
   }
 
-  // const backlink_Listener = (backlink) => {
-  //   console.log(backlink);
-  // }
+  const backlink_Listener = (backlink) => {
+    
+    updatedbacklinks.push(backlink);
+
+    // setBacklink(updatedbacklinks);
+    console.log("hello>>>>>", updatedbacklinks);
+  }
+
   const handle_get = async () => {
-
-    const domainContains = domains.filter(domain => domain.includes(text_userInput));
-
+    
+    const domainContains = domains.filter(domain => domain.includes(userInputedDomain));
+    
     if (domainContains.length > 0) {
       
       setIsExistedDomain(true);
-      // alert("This domain is already checked!");
+
     } else {
-      // socket.on('links', backlink_Listener);
-      // socket.emit('get_backlink', text_userInput);
+      
       get_links();
+
     }
   }
 
   const get_links = () => {
-    setLoading(true);
-        // alert('okay');
-      const text = 'hello world';
 
-      console.log('text>>>>', text );
+    // setLoading(true);
+    updatedbacklinks = [];
+    hubconnection.invoke("Get_backlink", userInputedDomain);
+    hubconnection.on('link', backlink_Listener);
+
+    console.log('text>>>>');
   
-        try {
-          axios({
-              method: "post",
-              url: `http://localhost:5131/api/Links`,
-              data:{'domain':text_userInput},
-              headers: {
-                "Content-Type": "application/json",
-              }
-            })
-            .then((response) => {
-              
-              setLoading(false);
-              // console.log('response>>>>>', response.data);
-  
-              setBacklink(response.data);
-  
-              console.log("backlinks>>>>", backlinks);
-  
-              console.log("first url>>>>>", response.data[1]);
-              
-            }).catch((error) => {
-              if (error.response) {
-  
-                setLoading(false);
-                  alert(error);
-                  console.log("error~~~~~~~~~")
-                  console.log(error.response)
-                  console.log(error.response.status)
-                  console.log(error.response.headers)
-                }
-            })
-        } catch (error) {
-          console.error('error:', error);
-        }
   }
 
   const formatTimes = (times) => {
@@ -185,7 +163,7 @@ function LandingPage () {
     return (
       <>
         <div id='main-board'>
-            <input type='text' value={text_userInput} onChange={handle_textarea} placeholder='input the domain...'></input>
+            <input type='text' value={userInputedDomain} onChange={handle_textarea} placeholder='input the domain...'></input>
             <button onClick={handle_get}>GET</button>
         </div>
         
