@@ -73,3 +73,11 @@ D:\Development\Dot net\backlink\Backlink\server\bin\Debug\net7.0\Serilog.dll
 D:\Development\Dot net\backlink\Backlink\server\bin\Debug\net7.0\Serilog.Enrichers.Thread.dll
 D:\Development\Dot net\backlink\Backlink\server\bin\Debug\net7.0\Serilog.Sinks.Console.dll
 D:\Development\Dot net\backlink\Backlink\server\bin\Debug\net7.0\System.Net.WebSockets.WebSocketProtocol.dll
+D:\Development\Dot net\backlink\Backlink\server\bin\Debug\net7.0\EngineIoClientDotNet.dll
+D:\Development\Dot net\backlink\Backlink\server\bin\Debug\net7.0\SocketIoClientDotNet.dll
+D:\Development\Dot net\backlink\Backlink\server\bin\Debug\net7.0\WebSocket4Net.dll
+D:\Development\Dot net\backlink\Backlink\server\bin\Debug\net7.0\EmitterSharp.dll
+D:\Development\Dot net\backlink\Backlink\server\bin\Debug\net7.0\EngineIOSharp.dll
+D:\Development\Dot net\backlink\Backlink\server\bin\Debug\net7.0\SimpleThreadMonitor.dll
+D:\Development\Dot net\backlink\Backlink\server\bin\Debug\net7.0\SocketIOSharp.dll
+D:\Development\Dot net\backlink\Backlink\server\bin\Debug\net7.0\WebSocketSharp.CustomHeaders.CustomHttpServer.dll

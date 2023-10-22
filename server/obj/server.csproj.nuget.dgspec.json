@@ -84,6 +84,14 @@
               "target": "Package",
               "version": "[13.0.3, )"
             },
+            "SocketIOSharp": {
+              "target": "Package",
+              "version": "[2.0.3, )"
+            },
+            "SocketIoClientDotNet": {
+              "target": "Package",
+              "version": "[0.9.13, )"
+            },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.5.0, )"

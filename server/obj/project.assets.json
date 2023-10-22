@@ -53,6 +53,54 @@
           }
         }
       },
+      "EmitterSharp/1.1.1.1": {
+        "type": "package",
+        "dependencies": {
+          "SimpleThreadMonitor": "1.0.2.1"
+        },
+        "compile": {
+          "lib/netcoreapp3.0/EmitterSharp.dll": {
+            "related": ".pdb"
+          }
+        },
+        "runtime": {
+          "lib/netcoreapp3.0/EmitterSharp.dll": {
+            "related": ".pdb"
+          }
+        }
+      },
+      "EngineIoClientDotNet/0.9.22": {
+        "type": "package",
+        "dependencies": {
+          "Newtonsoft.Json": "8.0.1",
+          "WebSocket4Net": "0.14.1"
+        },
+        "compile": {
+          "lib/net45/EngineIoClientDotNet.dll": {}
+        },
+        "runtime": {
+          "lib/net45/EngineIoClientDotNet.dll": {}
+        }
+      },
+      "EngineIOSharp/1.0.5": {
+        "type": "package",
+        "dependencies": {
+          "EmitterSharp": "1.1.1.1",
+          "Newtonsoft.Json": "9.0.1",
+          "SimpleThreadMonitor": "1.0.2.1",
+          "WebSocketSharp.CustomHeaders.CustomHttpServer": "1.0.2.3"
+        },
+        "compile": {
+          "lib/netcoreapp3.0/EngineIOSharp.dll": {
+            "related": ".pdb"
+          }
+        },
+        "runtime": {
+          "lib/netcoreapp3.0/EngineIOSharp.dll": {
+            "related": ".pdb"
+          }
+        }
+      },
       "Google.Apis/1.62.1": {
         "type": "package",
         "dependencies": {
@@ -1246,6 +1294,49 @@
         "runtime": {
           "lib/netcoreapp1.1/Serilog.Sinks.Console.dll": {
             "related": ".xml"
+          }
+        }
+      },
+      "SimpleThreadMonitor/1.0.2.1": {
+        "type": "package",
+        "compile": {
+          "lib/netcoreapp3.0/SimpleThreadMonitor.dll": {
+            "related": ".pdb"
+          }
+        },
+        "runtime": {
+          "lib/netcoreapp3.0/SimpleThreadMonitor.dll": {
+            "related": ".pdb"
+          }
+        }
+      },
+      "SocketIoClientDotNet/0.9.13": {
+        "type": "package",
+        "dependencies": {
+          "EngineIoClientDotNet": "0.9.22",
+          "Newtonsoft.Json": "8.0.1",
+          "WebSocket4Net": "0.14.1"
+        },
+        "compile": {
+          "lib/net45/SocketIoClientDotNet.dll": {}
+        },
+        "runtime": {
+          "lib/net45/SocketIoClientDotNet.dll": {}
+        }
+      },
+      "SocketIOSharp/2.0.3": {
+        "type": "package",
+        "dependencies": {
+          "EngineIOSharp": "1.0.5"
+        },
+        "compile": {
+          "lib/netstandard2.0/SocketIOSharp.dll": {
+            "related": ".pdb"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.0/SocketIOSharp.dll": {
+            "related": ".pdb"
           }
         }
       },
@@ -2869,6 +2960,28 @@
         "runtime": {
           "lib/netstandard1.3/System.Xml.XPath.XmlDocument.dll": {}
         }
+      },
+      "WebSocket4Net/0.14.1": {
+        "type": "package",
+        "compile": {
+          "lib/net45/WebSocket4Net.dll": {}
+        },
+        "runtime": {
+          "lib/net45/WebSocket4Net.dll": {}
+        }
+      },
+      "WebSocketSharp.CustomHeaders.CustomHttpServer/1.0.2.3": {
+        "type": "package",
+        "compile": {
+          "lib/netcoreapp3.0/WebSocketSharp.CustomHeaders.CustomHttpServer.dll": {
+            "related": ".pdb;.xml"
+          }
+        },
+        "runtime": {
+          "lib/netcoreapp3.0/WebSocketSharp.CustomHeaders.CustomHttpServer.dll": {
+            "related": ".pdb;.xml"
+          }
+        }
       }
     }
   },
@@ -2931,6 +3044,114 @@
         "lib/netstandard2.0/BouncyCastle.Crypto.xml",
         "lib/xamarinios/BouncyCastle.Crypto.dll",
         "lib/xamarinios/BouncyCastle.Crypto.xml"
+      ]
+    },
+    "EmitterSharp/1.1.1.1": {
+      "sha512": "DeLFZVYsMAn3tu80aEbzrZkhD+ka53fcU2+Iw6PGjVplVMrWi0GnpGU2Mg7ixYVxSTCOJtcot5Hr57iz6Xxnlw==",
+      "type": "package",
+      "path": "emittersharp/1.1.1.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "emittersharp.1.1.1.1.nupkg.sha512",
+        "emittersharp.nuspec",
+        "lib/net40/EmitterSharp.dll",
+        "lib/net40/EmitterSharp.pdb",
+        "lib/net45/EmitterSharp.dll",
+        "lib/net45/EmitterSharp.pdb",
+        "lib/netcoreapp2.0/EmitterSharp.dll",
+        "lib/netcoreapp2.0/EmitterSharp.pdb",
+        "lib/netcoreapp3.0/EmitterSharp.dll",
+        "lib/netcoreapp3.0/EmitterSharp.pdb",
+        "lib/netstandard2.0/EmitterSharp.dll",
+        "lib/netstandard2.0/EmitterSharp.pdb",
+        "src/EmitterSharp/Emitter.cs",
+        "src/EmitterSharp/EmitterSharp.csproj",
+        "src/EmitterSharp/Listener.cs",
+        "src/EmitterSharp/Properties/AssemblyInfo.cs"
+      ]
+    },
+    "EngineIoClientDotNet/0.9.22": {
+      "sha512": "/dMIbPizLAzde4hr8uvHSCshKqq2zEH1lYQa83eHXRMiBGltyUKikvIdZCunDiwPL1EPxa5ngHwqd5NBQyn7eA==",
+      "type": "package",
+      "path": "engineioclientdotnet/0.9.22",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "engineioclientdotnet.0.9.22.nupkg.sha512",
+        "engineioclientdotnet.nuspec",
+        "lib/monoandroid10/EngineIoClientDotNet.dll",
+        "lib/monotouch10/EngineIoClientDotNet.dll",
+        "lib/net35/EngineIoClientDotNet.dll",
+        "lib/net40/EngineIoClientDotNet.dll",
+        "lib/net45/EngineIoClientDotNet.dll",
+        "lib/netcore45/EngineIoClientDotNet.dll",
+        "lib/portable-win81+wpa81/EngineIoClientDotNet.dll",
+        "lib/portable-wpa81+wp81/EngineIoClientDotNet.dll",
+        "lib/windowsphone8/EngineIoClientDotNet.dll",
+        "lib/xamarinios10/EngineIoClientDotNet.dll"
+      ]
+    },
+    "EngineIOSharp/1.0.5": {
+      "sha512": "ijN9BtAybNA5SaLgU8uEu9FEHBQ/XIsqVg8egqXnJ3Bw3Fck/934QTRFcGzCIBifIoziBLLhS6arYI17Ur5/OA==",
+      "type": "package",
+      "path": "engineiosharp/1.0.5",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "engineiosharp.1.0.5.nupkg.sha512",
+        "engineiosharp.nuspec",
+        "icon.png",
+        "lib/net40/EngineIOSharp.dll",
+        "lib/net40/EngineIOSharp.pdb",
+        "lib/net45/EngineIOSharp.dll",
+        "lib/net45/EngineIOSharp.pdb",
+        "lib/netcoreapp2.0/EngineIOSharp.dll",
+        "lib/netcoreapp2.0/EngineIOSharp.pdb",
+        "lib/netcoreapp3.0/EngineIOSharp.dll",
+        "lib/netcoreapp3.0/EngineIOSharp.pdb",
+        "lib/netstandard2.0/EngineIOSharp.dll",
+        "lib/netstandard2.0/EngineIOSharp.pdb",
+        "src/EngineIOSharp/Client/EngineIOClient.Event.cs",
+        "src/EngineIOSharp/Client/EngineIOClient.Heartbeat.cs",
+        "src/EngineIOSharp/Client/EngineIOClient.Send.cs",
+        "src/EngineIOSharp/Client/EngineIOClient.cs",
+        "src/EngineIOSharp/Client/EngineIOClientOption.cs",
+        "src/EngineIOSharp/Client/Transport/EngineIOPolling.cs",
+        "src/EngineIOSharp/Client/Transport/EngineIOTransport.cs",
+        "src/EngineIOSharp/Client/Transport/EngineIOWebSocket.cs",
+        "src/EngineIOSharp/Common/EngineIOException.cs",
+        "src/EngineIOSharp/Common/EngineIOHandshake.cs",
+        "src/EngineIOSharp/Common/EngineIOLogger.cs",
+        "src/EngineIOSharp/Common/EngineIOOption.cs",
+        "src/EngineIOSharp/Common/EngineIOTimeout.cs",
+        "src/EngineIOSharp/Common/Enum/EngineIOReadyState.cs",
+        "src/EngineIOSharp/Common/Enum/EngineIOScheme.cs",
+        "src/EngineIOSharp/Common/Enum/Internal/EngineIOHttpMethod.cs",
+        "src/EngineIOSharp/Common/Enum/Internal/EngineIOScheme.cs",
+        "src/EngineIOSharp/Common/Enum/Internal/EngineIOTransportType.cs",
+        "src/EngineIOSharp/Common/Packet/EngineIOPacket.Static/EngineIOPacket.Decode.cs",
+        "src/EngineIOSharp/Common/Packet/EngineIOPacket.Static/EngineIOPacket.Factory.cs",
+        "src/EngineIOSharp/Common/Packet/EngineIOPacket.cs",
+        "src/EngineIOSharp/Common/Packet/EngineIOPacketType.cs",
+        "src/EngineIOSharp/Common/Static/EngineIOHttpManager.cs",
+        "src/EngineIOSharp/Common/Static/EngineIOSocketID.cs",
+        "src/EngineIOSharp/Common/Static/EngineIOTimestamp.cs",
+        "src/EngineIOSharp/EngineIOSharp.csproj",
+        "src/EngineIOSharp/Properties/AssemblyInfo.cs",
+        "src/EngineIOSharp/Server/Client/EngineIOSocket.Event.cs",
+        "src/EngineIOSharp/Server/Client/EngineIOSocket.Heartbeat.cs",
+        "src/EngineIOSharp/Server/Client/EngineIOSocket.Send.cs",
+        "src/EngineIOSharp/Server/Client/EngineIOSocket.cs",
+        "src/EngineIOSharp/Server/Client/Transport/EngineIOPolling.cs",
+        "src/EngineIOSharp/Server/Client/Transport/EngineIOTransport.cs",
+        "src/EngineIOSharp/Server/Client/Transport/EngineIOWebSocket.cs",
+        "src/EngineIOSharp/Server/EngineIOServer.Broadcast.cs",
+        "src/EngineIOSharp/Server/EngineIOServer.Event.cs",
+        "src/EngineIOSharp/Server/EngineIOServer.Http.cs",
+        "src/EngineIOSharp/Server/EngineIOServer.WebSocket.cs",
+        "src/EngineIOSharp/Server/EngineIOServer.cs",
+        "src/EngineIOSharp/Server/EngineIOServerOption.cs"
       ]
     },
     "Google.Apis/1.62.1": {
@@ -4527,6 +4748,97 @@
         "lib/netstandard1.3/Serilog.Sinks.Console.xml",
         "serilog.sinks.console.3.1.1.nupkg.sha512",
         "serilog.sinks.console.nuspec"
+      ]
+    },
+    "SimpleThreadMonitor/1.0.2.1": {
+      "sha512": "UrJWDqlYRncLH36dEo755JoHIHs8KwpU1C7TCh4vTF6nusyUZMwGOfB750NYugGieqFRU9pepGaAKA3yOXONKw==",
+      "type": "package",
+      "path": "simplethreadmonitor/1.0.2.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net40/SimpleThreadMonitor.dll",
+        "lib/net40/SimpleThreadMonitor.pdb",
+        "lib/net45/SimpleThreadMonitor.dll",
+        "lib/net45/SimpleThreadMonitor.pdb",
+        "lib/netcoreapp2.0/SimpleThreadMonitor.dll",
+        "lib/netcoreapp2.0/SimpleThreadMonitor.pdb",
+        "lib/netcoreapp3.0/SimpleThreadMonitor.dll",
+        "lib/netcoreapp3.0/SimpleThreadMonitor.pdb",
+        "lib/netstandard2.0/SimpleThreadMonitor.dll",
+        "lib/netstandard2.0/SimpleThreadMonitor.pdb",
+        "simplethreadmonitor.1.0.2.1.nupkg.sha512",
+        "simplethreadmonitor.nuspec",
+        "src/SimpleThreadMonitor/Properties/AssemblyInfo.cs",
+        "src/SimpleThreadMonitor/SimpleMutex.cs",
+        "src/SimpleThreadMonitor/SimpleThreadMonitor.csproj"
+      ]
+    },
+    "SocketIoClientDotNet/0.9.13": {
+      "sha512": "0U1gOjIYNLLeEabCinglXOeY7QyVPMmvE6DRtHgwhq2H8zglPUXIpbbG74FmRVZhDA8ryATpArTeHcT/CP6xXA==",
+      "type": "package",
+      "path": "socketioclientdotnet/0.9.13",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/monoandroid10/SocketIoClientDotNet.dll",
+        "lib/monotouch10/SocketIoClientDotNet.dll",
+        "lib/net35/SocketIoClientDotNet.dll",
+        "lib/net40/SocketIoClientDotNet.dll",
+        "lib/net45/SocketIoClientDotNet.dll",
+        "lib/netcore45/SocketIoClientDotNet.dll",
+        "lib/portable-win81+wpa81/SocketIoClientDotNet.dll",
+        "lib/portable-wpa81+wp81/SocketIoClientDotNet.dll",
+        "lib/windowsphone8/SocketIoClientDotNet.dll",
+        "lib/xamarinios10/SocketIoClientDotNet.dll",
+        "socketioclientdotnet.0.9.13.nupkg.sha512",
+        "socketioclientdotnet.nuspec"
+      ]
+    },
+    "SocketIOSharp/2.0.3": {
+      "sha512": "FqgyJj9czFaPOzD8lbNcT0NxViGX5K8nJTtTelAe61KcHPx14961o8kL+DCJmyoHtSazas5qB4hvoCl1kgohwQ==",
+      "type": "package",
+      "path": "socketiosharp/2.0.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "icon.png",
+        "lib/net40/SocketIOSharp.dll",
+        "lib/net40/SocketIOSharp.pdb",
+        "lib/net45/SocketIOSharp.dll",
+        "lib/net45/SocketIOSharp.pdb",
+        "lib/netstandard2.0/SocketIOSharp.dll",
+        "lib/netstandard2.0/SocketIOSharp.pdb",
+        "socketiosharp.2.0.3.nupkg.sha512",
+        "socketiosharp.nuspec",
+        "src/SocketIOSharp/Client/SocketIOClient.Event.cs",
+        "src/SocketIOSharp/Client/SocketIOClient.Send.cs",
+        "src/SocketIOSharp/Client/SocketIOClient.cs",
+        "src/SocketIOSharp/Client/SocketIOClientOption.cs",
+        "src/SocketIOSharp/Common/Abstract/Connection/SocketIOConnection.Event.cs",
+        "src/SocketIOSharp/Common/Abstract/Connection/SocketIOConnection.cs",
+        "src/SocketIOSharp/Common/Abstract/SocketIO.Emit.cs",
+        "src/SocketIOSharp/Common/Abstract/SocketIO.cs",
+        "src/SocketIOSharp/Common/Manager/SocketIOAckManager.cs",
+        "src/SocketIOSharp/Common/Packet/Binary/Constructors/Constructor.cs",
+        "src/SocketIOSharp/Common/Packet/Binary/Constructors/Deconstructor.cs",
+        "src/SocketIOSharp/Common/Packet/Binary/Constructors/Reconstructor.cs",
+        "src/SocketIOSharp/Common/Packet/SocketIOAck.cs",
+        "src/SocketIOSharp/Common/Packet/SocketIOAckEvent.cs",
+        "src/SocketIOSharp/Common/Packet/SocketIOPacket.Static/SocketIOPacket.Decoder.cs",
+        "src/SocketIOSharp/Common/Packet/SocketIOPacket.Static/SocketIOPacket.Factory.cs",
+        "src/SocketIOSharp/Common/Packet/SocketIOPacket.cs",
+        "src/SocketIOSharp/Common/Packet/SocketIOPacketType.cs",
+        "src/SocketIOSharp/Common/SocketIOEvent.cs",
+        "src/SocketIOSharp/Common/SocketIOException.cs",
+        "src/SocketIOSharp/Properties/AssemblyInfo.cs",
+        "src/SocketIOSharp/Server/Client/SocketIOSocket.Send.cs",
+        "src/SocketIOSharp/Server/Client/SocketIOSocket.cs",
+        "src/SocketIOSharp/Server/SocketIOServer.Emit.cs",
+        "src/SocketIOSharp/Server/SocketIOServer.Event.cs",
+        "src/SocketIOSharp/Server/SocketIOServer.cs",
+        "src/SocketIOSharp/Server/SocketIOServerOption.cs",
+        "src/SocketIOSharp/SocketIOSharp.csproj"
       ]
     },
     "SSH.NET/2016.1.0": {
@@ -8571,6 +8883,131 @@
         "system.xml.xpath.xmldocument.4.0.1.nupkg.sha512",
         "system.xml.xpath.xmldocument.nuspec"
       ]
+    },
+    "WebSocket4Net/0.14.1": {
+      "sha512": "01v/KxbZ9hTY8kXPL9erpU9HPCvd++OifmU29OvgTKzBaSDfZRIFZB9mdTrRjMY/Q+7Llq0VINWPpazpYNbx4g==",
+      "type": "package",
+      "path": "websocket4net/0.14.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/Xamarin.iOS10/WebSocket4Net.dll",
+        "lib/monoandroid23/WebSocket4Net.dll",
+        "lib/monotouch10/WebSocket4Net.dll",
+        "lib/net20/WebSocket4Net.dll",
+        "lib/net35/WebSocket4Net.dll",
+        "lib/net40/WebSocket4Net.dll",
+        "lib/net45/WebSocket4Net.dll",
+        "lib/sl40/WebSocket4Net.dll",
+        "lib/sl50-wp/WebSocket4Net.dll",
+        "lib/sl50/WebSocket4Net.dll",
+        "websocket4net.0.14.1.nupkg.sha512",
+        "websocket4net.nuspec"
+      ]
+    },
+    "WebSocketSharp.CustomHeaders.CustomHttpServer/1.0.2.3": {
+      "sha512": "Mf7z030hh+zyf+yMRcpcXG6MaApqNOjR9bsZKhXLa2054q8jiE/1DHG8uVNDmcpVpv3uTTDV0FFA3q1iukVACg==",
+      "type": "package",
+      "path": "websocketsharp.customheaders.customhttpserver/1.0.2.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net40/WebSocketSharp.CustomHeaders.CustomHttpServer.dll",
+        "lib/net40/WebSocketSharp.CustomHeaders.CustomHttpServer.pdb",
+        "lib/net40/WebSocketSharp.CustomHeaders.CustomHttpServer.xml",
+        "lib/net45/WebSocketSharp.CustomHeaders.CustomHttpServer.dll",
+        "lib/net45/WebSocketSharp.CustomHeaders.CustomHttpServer.pdb",
+        "lib/net45/WebSocketSharp.CustomHeaders.CustomHttpServer.xml",
+        "lib/netcoreapp2.0/WebSocketSharp.CustomHeaders.CustomHttpServer.dll",
+        "lib/netcoreapp2.0/WebSocketSharp.CustomHeaders.CustomHttpServer.pdb",
+        "lib/netcoreapp2.0/WebSocketSharp.CustomHeaders.CustomHttpServer.xml",
+        "lib/netcoreapp3.0/WebSocketSharp.CustomHeaders.CustomHttpServer.dll",
+        "lib/netcoreapp3.0/WebSocketSharp.CustomHeaders.CustomHttpServer.pdb",
+        "lib/netcoreapp3.0/WebSocketSharp.CustomHeaders.CustomHttpServer.xml",
+        "lib/netstandard2.0/WebSocketSharp.CustomHeaders.CustomHttpServer.dll",
+        "lib/netstandard2.0/WebSocketSharp.CustomHeaders.CustomHttpServer.pdb",
+        "lib/netstandard2.0/WebSocketSharp.CustomHeaders.CustomHttpServer.xml",
+        "src/websocket-sharp/ByteOrder.cs",
+        "src/websocket-sharp/CloseEventArgs.cs",
+        "src/websocket-sharp/CloseStatusCode.cs",
+        "src/websocket-sharp/CompressionMethod.cs",
+        "src/websocket-sharp/ErrorEventArgs.cs",
+        "src/websocket-sharp/Ext.cs",
+        "src/websocket-sharp/Fin.cs",
+        "src/websocket-sharp/HttpBase.cs",
+        "src/websocket-sharp/HttpRequest.cs",
+        "src/websocket-sharp/HttpResponse.cs",
+        "src/websocket-sharp/LogData.cs",
+        "src/websocket-sharp/LogLevel.cs",
+        "src/websocket-sharp/Logger.cs",
+        "src/websocket-sharp/Mask.cs",
+        "src/websocket-sharp/MessageEventArgs.cs",
+        "src/websocket-sharp/Net/AuthenticationBase.cs",
+        "src/websocket-sharp/Net/AuthenticationChallenge.cs",
+        "src/websocket-sharp/Net/AuthenticationResponse.cs",
+        "src/websocket-sharp/Net/AuthenticationSchemes.cs",
+        "src/websocket-sharp/Net/Chunk.cs",
+        "src/websocket-sharp/Net/ChunkStream.cs",
+        "src/websocket-sharp/Net/ChunkedRequestStream.cs",
+        "src/websocket-sharp/Net/ClientSslConfiguration.cs",
+        "src/websocket-sharp/Net/Cookie.cs",
+        "src/websocket-sharp/Net/CookieCollection.cs",
+        "src/websocket-sharp/Net/CookieException.cs",
+        "src/websocket-sharp/Net/EndPointListener.cs",
+        "src/websocket-sharp/Net/EndPointManager.cs",
+        "src/websocket-sharp/Net/HttpBasicIdentity.cs",
+        "src/websocket-sharp/Net/HttpConnection.cs",
+        "src/websocket-sharp/Net/HttpDigestIdentity.cs",
+        "src/websocket-sharp/Net/HttpHeaderInfo.cs",
+        "src/websocket-sharp/Net/HttpHeaderType.cs",
+        "src/websocket-sharp/Net/HttpListener.cs",
+        "src/websocket-sharp/Net/HttpListenerAsyncResult.cs",
+        "src/websocket-sharp/Net/HttpListenerContext.cs",
+        "src/websocket-sharp/Net/HttpListenerException.cs",
+        "src/websocket-sharp/Net/HttpListenerPrefix.cs",
+        "src/websocket-sharp/Net/HttpListenerPrefixCollection.cs",
+        "src/websocket-sharp/Net/HttpListenerRequest.cs",
+        "src/websocket-sharp/Net/HttpListenerResponse.cs",
+        "src/websocket-sharp/Net/HttpRequestHeader.cs",
+        "src/websocket-sharp/Net/HttpResponseHeader.cs",
+        "src/websocket-sharp/Net/HttpStatusCode.cs",
+        "src/websocket-sharp/Net/HttpStreamAsyncResult.cs",
+        "src/websocket-sharp/Net/HttpUtility.cs",
+        "src/websocket-sharp/Net/HttpVersion.cs",
+        "src/websocket-sharp/Net/InputChunkState.cs",
+        "src/websocket-sharp/Net/InputState.cs",
+        "src/websocket-sharp/Net/LineState.cs",
+        "src/websocket-sharp/Net/NetworkCredential.cs",
+        "src/websocket-sharp/Net/QueryStringCollection.cs",
+        "src/websocket-sharp/Net/ReadBufferState.cs",
+        "src/websocket-sharp/Net/RequestStream.cs",
+        "src/websocket-sharp/Net/ResponseStream.cs",
+        "src/websocket-sharp/Net/ServerSslConfiguration.cs",
+        "src/websocket-sharp/Net/WebHeaderCollection.cs",
+        "src/websocket-sharp/Net/WebSockets/HttpListenerWebSocketContext.cs",
+        "src/websocket-sharp/Net/WebSockets/TcpListenerWebSocketContext.cs",
+        "src/websocket-sharp/Net/WebSockets/WebSocketContext.cs",
+        "src/websocket-sharp/Opcode.cs",
+        "src/websocket-sharp/PayloadData.cs",
+        "src/websocket-sharp/Rsv.cs",
+        "src/websocket-sharp/Server/HttpRequestEventArgs.cs",
+        "src/websocket-sharp/Server/HttpServer.cs",
+        "src/websocket-sharp/Server/IWebSocketSession.cs",
+        "src/websocket-sharp/Server/ServerState.cs",
+        "src/websocket-sharp/Server/WebSocketBehavior.cs",
+        "src/websocket-sharp/Server/WebSocketServer.cs",
+        "src/websocket-sharp/Server/WebSocketServiceHost.cs",
+        "src/websocket-sharp/Server/WebSocketServiceHost`1.cs",
+        "src/websocket-sharp/Server/WebSocketServiceManager.cs",
+        "src/websocket-sharp/Server/WebSocketSessionManager.cs",
+        "src/websocket-sharp/WebSocket.cs",
+        "src/websocket-sharp/WebSocketException.cs",
+        "src/websocket-sharp/WebSocketFrame.cs",
+        "src/websocket-sharp/WebSocketSharp.CustomHeaders.CustomHttpServer.csproj",
+        "src/websocket-sharp/WebSocketState.cs",
+        "websocketsharp.customheaders.customhttpserver.1.0.2.3.nupkg.sha512",
+        "websocketsharp.customheaders.customhttpserver.nuspec"
+      ]
     }
   },
   "projectFileDependencyGroups": {
@@ -8584,6 +9021,8 @@
       "Microsoft.EntityFrameworkCore.Tools >= 7.0.11",
       "MySql.Data.EntityFrameworkCore >= 8.0.22",
       "Newtonsoft.Json >= 13.0.3",
+      "SocketIOSharp >= 2.0.3",
+      "SocketIoClientDotNet >= 0.9.13",
       "Swashbuckle.AspNetCore >= 6.5.0",
       "System.IO.FileSystem >= 4.3.0"
     ]
@@ -8672,6 +9111,14 @@
             "target": "Package",
             "version": "[13.0.3, )"
           },
+          "SocketIOSharp": {
+            "target": "Package",
+            "version": "[2.0.3, )"
+          },
+          "SocketIoClientDotNet": {
+            "target": "Package",
+            "version": "[0.9.13, )"
+          },
           "Swashbuckle.AspNetCore": {
             "target": "Package",
             "version": "[6.5.0, )"
@@ -8703,5 +9150,37 @@
         "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.401\\RuntimeIdentifierGraph.json"
       }
     }
-  }
+  },
+  "logs": [
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'EngineIoClientDotNet 0.9.22' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net7.0'. This package may not be fully compatible with your project.",
+      "libraryId": "EngineIoClientDotNet",
+      "targetGraphs": [
+        "net7.0"
+      ]
+    },
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'SocketIoClientDotNet 0.9.13' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net7.0'. This package may not be fully compatible with your project.",
+      "libraryId": "SocketIoClientDotNet",
+      "targetGraphs": [
+        "net7.0"
+      ]
+    },
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'WebSocket4Net 0.14.1' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net7.0'. This package may not be fully compatible with your project.",
+      "libraryId": "WebSocket4Net",
+      "targetGraphs": [
+        "net7.0"
+      ]
+    }
+  ]
 }

@@ -1,49 +1,85 @@
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using MySql.Data.MySqlClient;
-
-namespace YourNamespace
+using Newtonsoft.Json.Linq;
+using SocketIOSharp.Common;
+using SocketIOSharp.Server;
+using System;
+using SignalR;
+namespace server
 {
     public class Program
     {
         public static void Main(string[] args)
         {
-            var builder = WebApplication.CreateBuilder(args);
+            // Start Socket.IO server
+            // var socketServer = new SocketIOServer(new SocketIOServerOption(9001));
+            // Console.WriteLine("Listening on port " + socketServer.Option.Port);
 
-            // Add services to the container.
-            builder.Services.AddControllers();
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            // socketServer.OnConnection((socket) =>
+            // {
+            //     Console.WriteLine("Client connected!");
 
-            builder.Services.AddCors(options =>
-            {
-                options.AddDefaultPolicy(builder => {
-                    builder.AllowAnyOrigin()
-                           .AllowAnyMethod()
-                           .AllowAnyHeader();
-                });
-            });
+            //     socket.On("get_backlink", (data) =>
+            //     {
+            //         Console.WriteLine("testtesttest>>>>>");
+            //         foreach (JToken token in data)
+            //         {
+            //             Console.Write(token + " ");
+            //         }
 
-            string connectionString = "server=localhost;userid=root;password=;database=backlink";
-            builder.Services.AddScoped<MySqlConnection>(_ => new MySqlConnection(connectionString));
+            //         Console.WriteLine("params>>> " + data.ToString());
+            //         socket.Emit("links", data.ToString());
+            //     });
 
-            var app = builder.Build();
+            //     socket.On(SocketIOEvent.DISCONNECT, () =>
+            //     {
+            //         Console.WriteLine("Client disconnected!");
+            //     });
+            // });
 
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
+            // socketServer.Start();
 
-            app.UseHttpsRedirection();
-            app.UseRouting();
-            app.UseCors();
-            app.UseAuthorization();
-            app.MapControllers();
-            
-            app.Run();
+            // Start ASP.NET Core application
+            var host = Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.ConfigureServices(services =>
+                    {
+                        services.AddControllers();
+                        services.AddEndpointsApiExplorer();
+                        services.AddSwaggerGen();
+                        services.AddSignalR();
+                    })
+                    .Configure(app =>
+                    {
+                        var environment = app.ApplicationServices.GetService<IWebHostEnvironment>();
+                        
+                        if (environment.IsDevelopment())
+                        {
+                            app.UseSwagger();
+                            app.UseSwaggerUI();
+                        }
+                        app.UseRouting();
+                        app.UseHttpsRedirection();
+                        app.UseCors(x =>
+                            x.AllowAnyHeader()
+                             .AllowAnyMethod()
+                             .AllowCredentials()
+                             .WithOrigins("https://localhost:4200", "https://localhost:7034", "http://localhost:3000", "https://chomaimai.onlinesignpost.com"));
+
+                        app.UseAuthorization();
+                        app.UseEndpoints(endpoints =>
+                        {
+                            endpoints.MapControllers();
+                            endpoints.MapHub<ChatHub>("/chathub");
+                        });
+                    });
+                })
+                .Build();
+
+            host.Run();
         }
     }
 }

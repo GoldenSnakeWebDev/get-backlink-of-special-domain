@@ -17,6 +17,8 @@
           "Microsoft.EntityFrameworkCore.Tools": "7.0.11",
           "MySql.Data.EntityFrameworkCore": "8.0.22",
           "Newtonsoft.Json": "13.0.3",
+          "SocketIOSharp": "2.0.3",
+          "SocketIoClientDotNet": "0.9.13",
           "Swashbuckle.AspNetCore": "6.5.0",
           "System.IO.FileSystem": "4.3.0"
         },
@@ -61,6 +63,43 @@
           "lib/netstandard2.0/BouncyCastle.Crypto.dll": {
             "assemblyVersion": "1.8.2.0",
             "fileVersion": "1.8.18099.1"
+          }
+        }
+      },
+      "EmitterSharp/1.1.1.1": {
+        "dependencies": {
+          "SimpleThreadMonitor": "1.0.2.1"
+        },
+        "runtime": {
+          "lib/netcoreapp3.0/EmitterSharp.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "EngineIoClientDotNet/0.9.22": {
+        "dependencies": {
+          "Newtonsoft.Json": "13.0.3",
+          "WebSocket4Net": "0.14.1"
+        },
+        "runtime": {
+          "lib/net45/EngineIoClientDotNet.dll": {
+            "assemblyVersion": "0.9.22.0",
+            "fileVersion": "0.9.22.0"
+          }
+        }
+      },
+      "EngineIOSharp/1.0.5": {
+        "dependencies": {
+          "EmitterSharp": "1.1.1.1",
+          "Newtonsoft.Json": "13.0.3",
+          "SimpleThreadMonitor": "1.0.2.1",
+          "WebSocketSharp.CustomHeaders.CustomHttpServer": "1.0.2.3"
+        },
+        "runtime": {
+          "lib/netcoreapp3.0/EngineIOSharp.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
           }
         }
       },
@@ -650,6 +689,38 @@
           "lib/netcoreapp1.1/Serilog.Sinks.Console.dll": {
             "assemblyVersion": "3.1.1.0",
             "fileVersion": "3.1.1.0"
+          }
+        }
+      },
+      "SimpleThreadMonitor/1.0.2.1": {
+        "runtime": {
+          "lib/netcoreapp3.0/SimpleThreadMonitor.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "SocketIoClientDotNet/0.9.13": {
+        "dependencies": {
+          "EngineIoClientDotNet": "0.9.22",
+          "Newtonsoft.Json": "13.0.3",
+          "WebSocket4Net": "0.14.1"
+        },
+        "runtime": {
+          "lib/net45/SocketIoClientDotNet.dll": {
+            "assemblyVersion": "0.9.13.0",
+            "fileVersion": "0.9.13.0"
+          }
+        }
+      },
+      "SocketIOSharp/2.0.3": {
+        "dependencies": {
+          "EngineIOSharp": "1.0.5"
+        },
+        "runtime": {
+          "lib/netstandard2.0/SocketIOSharp.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
           }
         }
       },
@@ -1527,6 +1598,22 @@
             "fileVersion": "1.0.24212.1"
           }
         }
+      },
+      "WebSocket4Net/0.14.1": {
+        "runtime": {
+          "lib/net45/WebSocket4Net.dll": {
+            "assemblyVersion": "0.14.1.0",
+            "fileVersion": "0.14.1.0"
+          }
+        }
+      },
+      "WebSocketSharp.CustomHeaders.CustomHttpServer/1.0.2.3": {
+        "runtime": {
+          "lib/netcoreapp3.0/WebSocketSharp.CustomHeaders.CustomHttpServer.dll": {
+            "assemblyVersion": "1.0.2.3",
+            "fileVersion": "1.0.2.3"
+          }
+        }
       }
     }
   },
@@ -1556,6 +1643,27 @@
       "sha512": "sha512-jAy3uHN1U9DpoT/TgLqDTEhlccn/4doOVxhSmmNsnoSsGfHT9Lwr634ac9D0YFujAhNw61nWF4UIpHyzv0aQww==",
       "path": "bouncycastle.netcore/1.8.3",
       "hashPath": "bouncycastle.netcore.1.8.3.nupkg.sha512"
+    },
+    "EmitterSharp/1.1.1.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-DeLFZVYsMAn3tu80aEbzrZkhD+ka53fcU2+Iw6PGjVplVMrWi0GnpGU2Mg7ixYVxSTCOJtcot5Hr57iz6Xxnlw==",
+      "path": "emittersharp/1.1.1.1",
+      "hashPath": "emittersharp.1.1.1.1.nupkg.sha512"
+    },
+    "EngineIoClientDotNet/0.9.22": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-/dMIbPizLAzde4hr8uvHSCshKqq2zEH1lYQa83eHXRMiBGltyUKikvIdZCunDiwPL1EPxa5ngHwqd5NBQyn7eA==",
+      "path": "engineioclientdotnet/0.9.22",
+      "hashPath": "engineioclientdotnet.0.9.22.nupkg.sha512"
+    },
+    "EngineIOSharp/1.0.5": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ijN9BtAybNA5SaLgU8uEu9FEHBQ/XIsqVg8egqXnJ3Bw3Fck/934QTRFcGzCIBifIoziBLLhS6arYI17Ur5/OA==",
+      "path": "engineiosharp/1.0.5",
+      "hashPath": "engineiosharp.1.0.5.nupkg.sha512"
     },
     "Google.Apis/1.62.1": {
       "type": "package",
@@ -2046,6 +2154,27 @@
       "sha512": "sha512-56mI5AqvyF/i/c2451nvV71kq370XOCE4Uu5qiaJ295sOhMb9q3BWwG7mWLOVSnmpWiq0SBT3SXfgRXGNP6vzA==",
       "path": "serilog.sinks.console/3.1.1",
       "hashPath": "serilog.sinks.console.3.1.1.nupkg.sha512"
+    },
+    "SimpleThreadMonitor/1.0.2.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-UrJWDqlYRncLH36dEo755JoHIHs8KwpU1C7TCh4vTF6nusyUZMwGOfB750NYugGieqFRU9pepGaAKA3yOXONKw==",
+      "path": "simplethreadmonitor/1.0.2.1",
+      "hashPath": "simplethreadmonitor.1.0.2.1.nupkg.sha512"
+    },
+    "SocketIoClientDotNet/0.9.13": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-0U1gOjIYNLLeEabCinglXOeY7QyVPMmvE6DRtHgwhq2H8zglPUXIpbbG74FmRVZhDA8ryATpArTeHcT/CP6xXA==",
+      "path": "socketioclientdotnet/0.9.13",
+      "hashPath": "socketioclientdotnet.0.9.13.nupkg.sha512"
+    },
+    "SocketIOSharp/2.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-FqgyJj9czFaPOzD8lbNcT0NxViGX5K8nJTtTelAe61KcHPx14961o8kL+DCJmyoHtSazas5qB4hvoCl1kgohwQ==",
+      "path": "socketiosharp/2.0.3",
+      "hashPath": "socketiosharp.2.0.3.nupkg.sha512"
     },
     "SSH.NET/2016.1.0": {
       "type": "package",
@@ -2634,6 +2763,20 @@
       "sha512": "sha512-Zm2BdeanuncYs3NhCj4c9e1x3EXFzFBVv2wPEc/Dj4ZbI9R8ecLSR5frAsx4zJCPBtKQreQ7Q/KxJEohJZbfzA==",
       "path": "system.xml.xpath.xmldocument/4.0.1",
       "hashPath": "system.xml.xpath.xmldocument.4.0.1.nupkg.sha512"
+    },
+    "WebSocket4Net/0.14.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-01v/KxbZ9hTY8kXPL9erpU9HPCvd++OifmU29OvgTKzBaSDfZRIFZB9mdTrRjMY/Q+7Llq0VINWPpazpYNbx4g==",
+      "path": "websocket4net/0.14.1",
+      "hashPath": "websocket4net.0.14.1.nupkg.sha512"
+    },
+    "WebSocketSharp.CustomHeaders.CustomHttpServer/1.0.2.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Mf7z030hh+zyf+yMRcpcXG6MaApqNOjR9bsZKhXLa2054q8jiE/1DHG8uVNDmcpVpv3uTTDV0FFA3q1iukVACg==",
+      "path": "websocketsharp.customheaders.customhttpserver/1.0.2.3",
+      "hashPath": "websocketsharp.customheaders.customhttpserver.1.0.2.3.nupkg.sha512"
     }
   }
 }

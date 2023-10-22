@@ -26,9 +26,8 @@ using Abot2.Core;
 using Abot2.Crawler;
 using Abot2.Poco;
 using Serilog;
-using Microsoft.AspNetCore.SignalR;
 
-namespace server.Controllers;
+namespace crawler;
 
 public class LinkCrawler
 {
@@ -127,70 +126,6 @@ public class LinkCrawler
         }
         return false;
     }
-}
-
-[ApiController]
-[Route("api/[controller]")]
-public class LinksController : ControllerBase
-{
-    public class ParamsModel {
-        public string? Param {get; set;}
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> PostAsync([FromBody] dynamic input)
-    {
-
-        Console.WriteLine($"start>>>>, {input}");
-
-        JsonDocument  jsonDoc = JsonDocument.Parse(input.ToString());
-
-        JsonElement domainElement = jsonDoc.RootElement.GetProperty("domain");
-        
-        string? domain = domainElement.ValueKind != JsonValueKind.Undefined ? domainElement.GetString():null;
-        Console.WriteLine($"domain>>>, {domain}");
-
-        List<string> links = new()
-        {
-            domain ?? ""
-        };
-
-        var crawler = new LinkCrawler();
-
-        string[] link_lists = crawler.Get_Lists();
-
-        foreach (var link in link_lists) {
-
-            List<string> templinks  = crawler.CrawlLinks(link);
-            foreach (var templink in templinks) {
-
-                Console.WriteLine($"link>>> {templink}");
-
-                if (crawler.Check_link(templink, domain ?? "")) {
-
-                    // string temp = crawler.PickDomainFromURL(templink);
-
-                    if (!crawler.Check_existing(links, link)) {
-
-                        Console.WriteLine($"added link>>>> {link}");
-                        links.Add(link);
-                        // send_backlink(templink);
-                    }
-                }
-            }
-
-        }
-
-        if (links.Count > 0)
-        {
-            
-            Save_Backlink(links, domain ?? "");    
-        }
-        return Ok(links);
-
-        // return await Task.FromResult(Ok(links));
-        // return Ok(links);
-    }
 
     public async void Save_Backlink(List<string> links, string domain) {
 
@@ -230,12 +165,4 @@ public class LinksController : ControllerBase
         await connection.CloseAsync();
         
     }
-
-    // public async Task send_backlink(string backlink) {
-    //     await  _hubContext.Clients.All.SendAsync("links", backlink);
-    // }
-    
 }
-
-
-

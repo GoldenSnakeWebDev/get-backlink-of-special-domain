@@ -38,6 +38,9 @@ public class ExistedDomainController : ControllerBase
             result.Add(domain);
         }
 
+        Response.Headers.Add("Access-Control-Allow-Origin", "http://localhost:3000");
+
+
         return Ok(result);
     }
 }
@@ -56,7 +59,6 @@ public class ExistedBacklinkController : ControllerBase
         JsonElement domainElement = jsonDoc.RootElement.GetProperty("domain");
         
         string? domain = domainElement.ValueKind != JsonValueKind.Undefined ? domainElement.GetString():null;
-
 
         using var connection = new MySqlConnection("server=localhost;userid=root;password=;database=backlink");
 
@@ -81,6 +83,8 @@ public class ExistedBacklinkController : ControllerBase
             result_Backlink.Add(backlink);
             result_time.Add(created_time);
         }
+
+        Response.Headers.Add("Access-Control-Allow-Origin", "http://localhost:3000");
 
         return Ok(new {result_Backlink, result_time});
     }

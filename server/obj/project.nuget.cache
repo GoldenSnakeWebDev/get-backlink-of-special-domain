@@ -1,12 +1,15 @@
 {
   "version": 2,
-  "dgSpecHash": "7F+cKk3WwLYAhqYxv6ZeMMEvRXajaUvDMiklb6TK/gNp2W3wCZEPHfVsYSuS1ZxiC95YVwBadb0xoZNhpKixQQ==",
+  "dgSpecHash": "U8wDZ6ajMVbg9RsRtlSzmJUBpwxn3Bon3sDyjA+7x4wbAnZs3YMwEdWUnXqptS3SL/+wVr+Pw9OBvgKpoHDnOg==",
   "success": true,
   "projectFilePath": "D:\\Development\\Dot net\\backlink\\Backlink\\server\\server.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Administrator\\.nuget\\packages\\abot\\2.0.70\\abot.2.0.70.nupkg.sha512",
     "C:\\Users\\Administrator\\.nuget\\packages\\anglesharp\\0.14.0\\anglesharp.0.14.0.nupkg.sha512",
     "C:\\Users\\Administrator\\.nuget\\packages\\bouncycastle.netcore\\1.8.3\\bouncycastle.netcore.1.8.3.nupkg.sha512",
+    "C:\\Users\\Administrator\\.nuget\\packages\\emittersharp\\1.1.1.1\\emittersharp.1.1.1.1.nupkg.sha512",
+    "C:\\Users\\Administrator\\.nuget\\packages\\engineioclientdotnet\\0.9.22\\engineioclientdotnet.0.9.22.nupkg.sha512",
+    "C:\\Users\\Administrator\\.nuget\\packages\\engineiosharp\\1.0.5\\engineiosharp.1.0.5.nupkg.sha512",
     "C:\\Users\\Administrator\\.nuget\\packages\\google.apis\\1.62.1\\google.apis.1.62.1.nupkg.sha512",
     "C:\\Users\\Administrator\\.nuget\\packages\\google.apis.core\\1.62.1\\google.apis.core.1.62.1.nupkg.sha512",
     "C:\\Users\\Administrator\\.nuget\\packages\\google.protobuf\\3.11.4\\google.protobuf.3.11.4.nupkg.sha512",
@@ -77,6 +80,9 @@
     "C:\\Users\\Administrator\\.nuget\\packages\\serilog\\2.10.0\\serilog.2.10.0.nupkg.sha512",
     "C:\\Users\\Administrator\\.nuget\\packages\\serilog.enrichers.thread\\3.1.0\\serilog.enrichers.thread.3.1.0.nupkg.sha512",
     "C:\\Users\\Administrator\\.nuget\\packages\\serilog.sinks.console\\3.1.1\\serilog.sinks.console.3.1.1.nupkg.sha512",
+    "C:\\Users\\Administrator\\.nuget\\packages\\simplethreadmonitor\\1.0.2.1\\simplethreadmonitor.1.0.2.1.nupkg.sha512",
+    "C:\\Users\\Administrator\\.nuget\\packages\\socketioclientdotnet\\0.9.13\\socketioclientdotnet.0.9.13.nupkg.sha512",
+    "C:\\Users\\Administrator\\.nuget\\packages\\socketiosharp\\2.0.3\\socketiosharp.2.0.3.nupkg.sha512",
     "C:\\Users\\Administrator\\.nuget\\packages\\ssh.net\\2016.1.0\\ssh.net.2016.1.0.nupkg.sha512",
     "C:\\Users\\Administrator\\.nuget\\packages\\sshnet.security.cryptography\\1.2.0\\sshnet.security.cryptography.1.2.0.nupkg.sha512",
     "C:\\Users\\Administrator\\.nuget\\packages\\swashbuckle.aspnetcore\\6.5.0\\swashbuckle.aspnetcore.6.5.0.nupkg.sha512",
@@ -160,7 +166,40 @@
     "C:\\Users\\Administrator\\.nuget\\packages\\system.xml.xdocument\\4.0.11\\system.xml.xdocument.4.0.11.nupkg.sha512",
     "C:\\Users\\Administrator\\.nuget\\packages\\system.xml.xmldocument\\4.0.1\\system.xml.xmldocument.4.0.1.nupkg.sha512",
     "C:\\Users\\Administrator\\.nuget\\packages\\system.xml.xpath\\4.0.1\\system.xml.xpath.4.0.1.nupkg.sha512",
-    "C:\\Users\\Administrator\\.nuget\\packages\\system.xml.xpath.xmldocument\\4.0.1\\system.xml.xpath.xmldocument.4.0.1.nupkg.sha512"
+    "C:\\Users\\Administrator\\.nuget\\packages\\system.xml.xpath.xmldocument\\4.0.1\\system.xml.xpath.xmldocument.4.0.1.nupkg.sha512",
+    "C:\\Users\\Administrator\\.nuget\\packages\\websocket4net\\0.14.1\\websocket4net.0.14.1.nupkg.sha512",
+    "C:\\Users\\Administrator\\.nuget\\packages\\websocketsharp.customheaders.customhttpserver\\1.0.2.3\\websocketsharp.customheaders.customhttpserver.1.0.2.3.nupkg.sha512"
   ],
-  "logs": []
+  "logs": [
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'EngineIoClientDotNet 0.9.22' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net7.0'. This package may not be fully compatible with your project.",
+      "libraryId": "EngineIoClientDotNet",
+      "targetGraphs": [
+        "net7.0"
+      ]
+    },
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'SocketIoClientDotNet 0.9.13' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net7.0'. This package may not be fully compatible with your project.",
+      "libraryId": "SocketIoClientDotNet",
+      "targetGraphs": [
+        "net7.0"
+      ]
+    },
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'WebSocket4Net 0.14.1' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net7.0'. This package may not be fully compatible with your project.",
+      "libraryId": "WebSocket4Net",
+      "targetGraphs": [
+        "net7.0"
+      ]
+    }
+  ]
 }
