@@ -111,7 +111,7 @@ public class LinkCrawler
     }
 
     public bool Check_link (string link, string domain) {
-        if (!link.Contains(domain)) {
+        if (link.Contains(domain)) {
             return true;
         }
 
@@ -123,6 +123,54 @@ public class LinkCrawler
             return true;
         }
         return false;
+    }
+
+    public async Task<List<string>> get_Backlink_From_DB(string domain) {
+        // string connectionString = "server=localhost;userid=root;password=;database=backlink";
+
+        using var connection = new MySqlConnection("server=localhost;userid=root;password=;database=backlink");
+
+        connection.Open();
+
+        using MySqlCommand command = new MySqlCommand($"select sublink from sublink where domain = @domain", connection);
+        command.Parameters.AddWithValue("@domain", domain);
+        var reader =  command.ExecuteReader();
+
+        List<string> result = new List<string>();
+
+        while (reader.Read()) {
+            var sublink = reader.GetString(0);
+            result.Add(sublink);
+        }
+
+        await connection.CloseAsync();
+
+        return result;
+    }
+
+    public async void Save_Sublink (List<string> sublink, string domain) {
+    
+        using var connection = new MySqlConnection("server=localhost;userid=root;password=;database=backlink");
+
+        connection.Open();
+
+        Console.WriteLine("save okay?");
+        
+        var index = 0;
+
+        foreach (var link in sublink) {
+
+            using MySqlCommand command = new MySqlCommand($"INSERT INTO sublink (domain, sublink) VALUES(@domain, @sublink)", connection);
+
+            command.Parameters.AddWithValue("@domain", domain);
+            command.Parameters.AddWithValue("@sublink", link);
+            
+            command.ExecuteNonQuery();
+
+            index ++;
+        }
+
+        await connection.CloseAsync();
     }
 
     public async void Save_Backlink(List<string> links, List<DateTime> date_times, string domain) {

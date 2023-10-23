@@ -25,13 +25,19 @@ namespace SignalR
                 // links.Add(link);
                 // date_time.Add(curTime);
 
-                Console.WriteLine($"progress: {(int)Math.Ceiling((double)index/number_of_list * 100)} number of list: {number_of_list} index: {index}");
-                List<string> templinks  = crawler.CrawlLinks(link);
+                // Console.WriteLine($"progress: {(int)Math.Ceiling((double)index/number_of_list * 100)} number of list: {number_of_list} index: {index}");
+                List<string> templinks = new ();
+                templinks = await crawler.get_Backlink_From_DB(link);
+                if (templinks.Count < 1) {
+
+                    templinks  = crawler.CrawlLinks(link);
+
+                    crawler.Save_Sublink(templinks, link);
+                }
 
                 foreach (var templink in templinks) {
 
-                    Console.WriteLine($"link>>> {templink}");
-
+                    Console.WriteLine($"link>>> {templink} domain>>>: {domain}");
                     if (crawler.Check_link(templink, domain ?? "")) {
 
                         // string temp = crawler.PickDomainFromURL(templink);
@@ -43,10 +49,10 @@ namespace SignalR
                             // await Clients.All.SendAsync("progress_bar", (int)Math.Ceiling((double)index/number_of_list * 100));
                             links.Add(link);
                             date_time.Add(cur_Time);
+                            break;
                         }
                     }
                 }
-
             }
 
              if (links.Count > 0)
