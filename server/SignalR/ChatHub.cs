@@ -27,7 +27,7 @@ namespace SignalR
 
                 // Console.WriteLine($"progress: {(int)Math.Ceiling((double)index/number_of_list * 100)} number of list: {number_of_list} index: {index}");
                 List<string> templinks = new ();
-                templinks = await crawler.get_Backlink_From_DB(link);
+                templinks = await crawler.get_Sublink_From_DB(link);
                 if (templinks.Count < 1) {
 
                     templinks  = crawler.CrawlLinks(link);
@@ -37,8 +37,11 @@ namespace SignalR
 
                 foreach (var templink in templinks) {
 
-                    Console.WriteLine($"link>>> {templink} domain>>>: {domain}");
+                    // await Clients.All.SendAsync("link", templink, curTime);
+
                     if (crawler.Check_link(templink, domain ?? "")) {
+                        
+                        Console.WriteLine($"link>>> {templink} domain>>>: {domain}");
 
                         // string temp = crawler.PickDomainFromURL(templink);
 

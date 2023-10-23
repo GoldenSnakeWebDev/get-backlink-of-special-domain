@@ -26,6 +26,7 @@ using Abot2.Core;
 using Abot2.Crawler;
 using Abot2.Poco;
 using Serilog;
+using System.Runtime.Serialization;
 
 namespace crawler;
 
@@ -34,6 +35,8 @@ public class LinkCrawler
     public List<string> CrawlLinks(string domain)
     {
         var links = new List<string>();
+
+        var result_links = new List<string>();
 
         LinkCrawler crawler = new();
 
@@ -57,18 +60,67 @@ public class LinkCrawler
             {
                 string link = WebUtility.HtmlDecode(linkNode.GetAttributeValue("href", ""));
 
-                links.Add(PickDomainFromURL(link));
+                links.Add(link);
             }
 
+            Console.WriteLine("get initial link");
+
+            var temp_links = new List<string>();
+
+            try {
+
+                foreach (string link in links) {
+                    if (Check_relative_url(link)) {
+                        string absoluteUrl = Make_absolute_url(URI, link);
+                        
+                        HtmlDocument tmep_doc = web.Load(absoluteUrl);
+
+                        foreach (HtmlNode linkNode in tmep_doc.DocumentNode.SelectNodes("//a[@href]"))
+                        {
+                            string templink = WebUtility.HtmlDecode(linkNode.GetAttributeValue("href", ""));
+
+                            Console.WriteLine($"templink>>>> {templink}");
+
+                            temp_links.Add(templink);
+                        }
+                    }
+                }
+            } catch (Exception ex) {
+                Console.WriteLine($"Error is occured: {ex.Message}");
+            }
+
+
+            result_links = links.Concat(temp_links).ToList();
+
         }
-        catch (System.Exception)
+        catch (Exception ex)
         {
-            Console.WriteLine("An error occurred:");
+            Console.WriteLine($"An error occurred: {ex.Message}");
             // Handle any other exceptions that might occur during the execution of the code
         }
 
-        return links;
+        return result_links;
         
+    }
+
+    public string Make_absolute_url (string domain, string relativeUrl) {
+
+        Console.WriteLine("make absolute url");
+        Uri baseUri = new Uri(domain);
+        Uri absoluteUri = new Uri(baseUri, relativeUrl);
+        string absoluteUrl = absoluteUri.ToString();
+
+        return absoluteUrl;
+    }
+
+    public bool Check_relative_url(string url) {
+
+        Console.WriteLine($"url>>>> {url}");
+        Uri uri;
+        bool isRelative = Uri.TryCreate(url, UriKind.Relative, out uri);
+
+        Console.WriteLine($"is Relative url????>>>> {isRelative}");
+        return isRelative;
     }
 
     public string[] Get_Lists() {
@@ -125,7 +177,7 @@ public class LinkCrawler
         return false;
     }
 
-    public async Task<List<string>> get_Backlink_From_DB(string domain) {
+    public async Task<List<string>> get_Sublink_From_DB(string domain) {
         // string connectionString = "server=localhost;userid=root;password=;database=backlink";
 
         using var connection = new MySqlConnection("server=localhost;userid=root;password=;database=backlink");
