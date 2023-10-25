@@ -1,7 +1,10 @@
+using System.Text.RegularExpressions;
 using System;
 using System.Collections.Generic;
 using System.Net;
+using MySql.Data.MySqlClient;
 using HtmlAgilityPack;
+using crawler;
 
 namespace scraping;
 
@@ -85,27 +88,31 @@ public class LinkScraping {
 
             var temp_links = new List<string>();
 
-            // try {
+            try {
 
-            //     foreach (string link in links) {
-            //         if (Check_relative_url(link)) {
-            //             string absoluteUrl = Make_absolute_url(URI, link);
-                        
-            //             HtmlDocument tmep_doc = web.Load(absoluteUrl);
+                foreach (string link in links) {
+                    if (Check_relative_url(link)) {
 
-            //             foreach (HtmlNode linkNode in tmep_doc.DocumentNode.SelectNodes("//a[@href]"))
-            //             {
-            //                 string templink = WebUtility.HtmlDecode(linkNode.GetAttributeValue("href", ""));
+                        if(link.Contains(".html")) {
 
-            //                 Console.WriteLine($"templink>>>> {templink}");
+                            string absoluteUrl = Make_absolute_url(URI, link);
+                            
+                            HtmlDocument tmep_doc = web.Load(absoluteUrl);
 
-            //                 temp_links.Add(templink);
-            //             }
-            //         }
-            //     }
-            // } catch (Exception ex) {
-            //     Console.WriteLine($"Error is occured: {ex.Message}");
-            // }
+                            foreach (HtmlNode linkNode in tmep_doc.DocumentNode.SelectNodes("//a[@href]"))
+                            {
+                                string templink = WebUtility.HtmlDecode(linkNode.GetAttributeValue("href", ""));
+
+                                Console.WriteLine($"templink>>>> {templink}");
+
+                                temp_links.Add(templink);
+                            }
+                        }
+                    }
+                }
+            } catch (Exception ex) {
+                Console.WriteLine($"Error is occured: {ex.Message}");
+            }
 
 
             result_links = links.Concat(temp_links).ToList();
@@ -151,7 +158,7 @@ public class LinkScraping {
         
     }
 
-    public bool Check_and_Save_on_DB(string domain, string link) {
+    public async Task<bool> Check_and_Save_on_DB(string domain, string link) {
 
         DateTime current_time = DateTime.Now;
 
@@ -164,9 +171,11 @@ public class LinkScraping {
         command3.Parameters.AddWithValue("@link", link);
 
         // var reader =  command.ExecuteReader();
-        int count = Convert.ToInt32(command.ExecuteScalar());
+        int count = Convert.ToInt32(command3.ExecuteScalar());
 
         if (count > 0) {
+            await connection.CloseAsync();
+
             return true;
         }
         else {
@@ -175,18 +184,11 @@ public class LinkScraping {
             command3.Parameters.AddWithValue("@backlink", link);
             command3.Parameters.AddWithValue("@created_time", current_time);
             command3.ExecuteNonQuery();
+            await connection.CloseAsync();
+
             return false;
         }
 
-        await connection.CloseAsync();
-    }
-
-    public void CheckAndCreateTable(MySqlConnection connection, string tableName, int limit) {
-        string query = $"SELECT COUNT(*) FROM {tableName}";
-        using MySqlCommand command = new MySqlCommand(query, connection);
-        int rowCount = Convert.ToInt32(command.ExecuteScalar());
-
-        if (rowCount >= )
     }
 
     public string PickDomainFromURL(string URL) {
@@ -211,6 +213,21 @@ public class LinkScraping {
 
         Console.WriteLine($"is Relative url????>>>> {isRelative}");
         return isRelative;
+    }
+    public string Make_absolute_url (string domain, string relativeUrl) {
+
+        Console.WriteLine("make absolute url");
+        Uri baseUri = new Uri(domain);
+        Uri absoluteUri = new Uri(baseUri, relativeUrl);
+        string absoluteUrl = absoluteUri.ToString();
+
+        return absoluteUrl;
+    }
+    public string ConvertToURI(string domain)
+    {
+        string URI = $"http://{domain}";
+        
+        return URI;
     }
 
     public Dictionary<string, List<string>> Get_backlink_from_DB(string domain) {
@@ -244,6 +261,16 @@ public class LinkScraping {
         result["time"] = result_time;
 
         return result;
+    }
+
+    public string[] Get_Lists() {
+
+        Console.WriteLine("okay?");
+        var lists = System.IO.File.ReadAllLines("link lists.txt");
+
+        Console.WriteLine($"lists>>>: {lists}");
+
+        return lists;
     }
 
 }
