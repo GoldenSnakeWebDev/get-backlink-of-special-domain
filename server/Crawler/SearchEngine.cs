@@ -19,16 +19,16 @@ using System.Net.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace GoogleSearch;
+namespace SearchEngine;
 
-public class GoogleSearch {
-    public async Task<List<string>> GetBacklinks(string domain, string cx, string apikey)
+public class GetBacklink_GoogleSearch {
+    public async Task<List<string>> Search(string domain, string cx, string apikey)
     {
         var backlinks = new List<string>();
         var googleSearchResult = new List<string>();
 
         int start = 1;
-        int numResults = 10;
+        int numResults = 1000;
 
         while (backlinks.Count < numResults)
         {

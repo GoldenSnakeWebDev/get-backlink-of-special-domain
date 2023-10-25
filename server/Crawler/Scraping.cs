@@ -45,4 +45,205 @@ public class LinkScraping {
 
         return backlinks;
     }
+
+    public List<string> get_outgoing_link(string domain)
+    {
+        var links = new List<string>();
+
+        var result_links = new List<string>();
+
+        LinkCrawler crawler = new();
+
+        var URI = "";
+
+        if (!crawler.IsCorrectURI(domain?? "")) {
+
+            URI = ConvertToURI(domain ?? "");
+        }
+        else {
+            URI = domain;
+        }
+
+        try
+        {
+            HtmlWeb web = new();
+
+            HtmlDocument doc = web.Load(URI);
+
+            foreach (HtmlNode linkNode in doc.DocumentNode.SelectNodes("//a[@href]"))
+            {
+                string link = WebUtility.HtmlDecode(linkNode.GetAttributeValue("href", ""));
+
+                if (!Check_relative_url(link)) {
+
+                    links.Add(PickDomainFromURL(link));
+                }
+
+            }
+
+            Console.WriteLine("get initial link");
+
+            var temp_links = new List<string>();
+
+            // try {
+
+            //     foreach (string link in links) {
+            //         if (Check_relative_url(link)) {
+            //             string absoluteUrl = Make_absolute_url(URI, link);
+                        
+            //             HtmlDocument tmep_doc = web.Load(absoluteUrl);
+
+            //             foreach (HtmlNode linkNode in tmep_doc.DocumentNode.SelectNodes("//a[@href]"))
+            //             {
+            //                 string templink = WebUtility.HtmlDecode(linkNode.GetAttributeValue("href", ""));
+
+            //                 Console.WriteLine($"templink>>>> {templink}");
+
+            //                 temp_links.Add(templink);
+            //             }
+            //         }
+            //     }
+            // } catch (Exception ex) {
+            //     Console.WriteLine($"Error is occured: {ex.Message}");
+            // }
+
+
+            result_links = links.Concat(temp_links).ToList();
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An error occurred: {ex.Message}");
+            // Handle any other exceptions that might occur during the execution of the code
+        }
+
+        return result_links;
+        
+    }
+
+
+    public async void Save_link(List<string> links, string domain) {
+
+        DateTime current_time = DateTime.Now;
+
+        using var connection = new MySqlConnection("server=localhost;userid=root;password=;database=backlink");
+
+        connection.Open();
+
+        Console.WriteLine("save okay?");
+
+        var index = 0;
+
+        foreach (var link in links) {
+
+            using MySqlCommand command3 = new MySqlCommand($"INSERT INTO links (domain, link, created_time) VALUES(@domain, @backlink, @created_time)", connection);
+
+            command3.Parameters.AddWithValue("@domain", domain);
+            command3.Parameters.AddWithValue("@backlink", link);
+            command3.Parameters.AddWithValue("@created_time", current_time);
+
+            command3.ExecuteNonQuery();
+
+            index ++;
+        }
+
+        await connection.CloseAsync();
+        
+    }
+
+    public bool Check_and_Save_on_DB(string domain, string link) {
+
+        DateTime current_time = DateTime.Now;
+
+        using var connection = new MySqlConnection("server=localhost;userid=root;password=;database=backlink");
+
+        connection.Open();
+
+        MySqlCommand command3 = new MySqlCommand($"SELECT COUNT(*) FROM links WHERE link = @link", connection);
+
+        command3.Parameters.AddWithValue("@link", link);
+
+        // var reader =  command.ExecuteReader();
+        int count = Convert.ToInt32(command.ExecuteScalar());
+
+        if (count > 0) {
+            return true;
+        }
+        else {
+            command3 = new MySqlCommand($"INSERT INTO links (domain, link, created_time) VALUES(@domain, @backlink, @created_time)", connection);
+            command3.Parameters.AddWithValue("@domain", domain);
+            command3.Parameters.AddWithValue("@backlink", link);
+            command3.Parameters.AddWithValue("@created_time", current_time);
+            command3.ExecuteNonQuery();
+            return false;
+        }
+
+        await connection.CloseAsync();
+    }
+
+    public void CheckAndCreateTable(MySqlConnection connection, string tableName, int limit) {
+        string query = $"SELECT COUNT(*) FROM {tableName}";
+        using MySqlCommand command = new MySqlCommand(query, connection);
+        int rowCount = Convert.ToInt32(command.ExecuteScalar());
+
+        if (rowCount >= )
+    }
+
+    public string PickDomainFromURL(string URL) {
+        Regex regex = new Regex("(https?://)(www\\.)?([a-zA-Z0-9.-]+)");
+        Match match = regex.Match(URL);
+        
+        if (match.Success)
+        {
+            string domain = match.Groups[3].Value;
+
+            return domain;
+            // Console.WriteLine(domain);
+        }
+        return URL;
+    }
+
+    public bool Check_relative_url(string url) {
+
+        Console.WriteLine($"url>>>> {url}");
+        Uri uri;
+        bool isRelative = Uri.TryCreate(url, UriKind.Relative, out uri);
+
+        Console.WriteLine($"is Relative url????>>>> {isRelative}");
+        return isRelative;
+    }
+
+    public Dictionary<string, List<string>> Get_backlink_from_DB(string domain) {
+
+        using var connection = new MySqlConnection("server=localhost;userid=root;password=;database=backlink");
+
+        connection.Open();
+
+        using MySqlCommand command = new MySqlCommand($"SELECT link, created_time FROM links WHERE link=@domain", connection);
+
+        command.Parameters.AddWithValue("@domain", domain);
+
+        var reader =  command.ExecuteReader();
+
+        List<string> result_Backlink = new List<string>();
+
+        List<string> result_time = new List<string>();
+
+        while (reader.Read()) {
+            var backlink =reader.GetString(0);
+            var created_time = reader.GetString(1);
+
+            // string[] temp = {backlink, created_time};
+
+            result_Backlink.Add(backlink);
+            result_time.Add(created_time);
+        }
+
+        Dictionary<string, List<string>> result = new Dictionary<string, List<string>>();
+        result["backlink"] = result_Backlink;
+        result["time"] = result_time;
+
+        return result;
+    }
+
 }

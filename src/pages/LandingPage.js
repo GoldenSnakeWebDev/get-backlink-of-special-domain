@@ -112,6 +112,7 @@ function LandingPage () {
 
     setTimes([]);
     setBacklink([]);
+
     hubconnection.invoke("Get_backlink", userInputedDomain);
     hubconnection.on('link', backlink_Listener);
     hubconnection.on('getting_end', getting_end);

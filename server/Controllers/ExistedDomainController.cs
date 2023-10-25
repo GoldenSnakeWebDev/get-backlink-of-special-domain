@@ -90,3 +90,46 @@ public class ExistedBacklinkController : ControllerBase
         return Ok(new {result_Backlink, result_time});
     }
 }
+
+[ApiController]
+[Route("api/get_Backlink")]
+public class GetBacklinkController : ControllerBase 
+{
+    
+    [HttpPost]
+    public async Task<IActionResult> PostAsync([FromBody] dynamic param)
+    {
+
+        JsonDocument  jsonDoc = JsonDocument.Parse(param.ToString());
+
+        JsonElement domainElement = jsonDoc.RootElement.GetProperty("domain");
+        
+        string? domain = domainElement.ValueKind != JsonValueKind.Undefined ? domainElement.GetString():null;
+
+        using var connection = new MySqlConnection("server=localhost;userid=root;password=;database=backlink");
+
+        connection.Open();
+
+        using MySqlCommand command = new MySqlCommand($"SELECT link, created_time FROM links WHERE link=@domain", connection);
+
+        command.Parameters.AddWithValue("@domain", domain);
+
+        var reader =  command.ExecuteReader();
+
+        List<string[]> result_Backlink = new List<string[]>();
+
+        List<string[]> result_time = new List<string[]>();
+
+        while (reader.Read()) {
+            var backlink = new string[] {reader.GetString(0)};
+            var created_time = new string[] {reader.GetString(1)};
+
+            // string[] temp = {backlink, created_time};
+
+            result_Backlink.Add(backlink);
+            result_time.Add(created_time);
+        }
+
+        return Ok(new {result_Backlink, result_time});
+    }
+}

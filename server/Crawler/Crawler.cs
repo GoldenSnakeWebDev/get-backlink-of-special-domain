@@ -67,27 +67,27 @@ public class LinkCrawler
 
             var temp_links = new List<string>();
 
-            try {
+            // try {
 
-                foreach (string link in links) {
-                    if (Check_relative_url(link)) {
-                        string absoluteUrl = Make_absolute_url(URI, link);
+            //     foreach (string link in links) {
+            //         if (Check_relative_url(link)) {
+            //             string absoluteUrl = Make_absolute_url(URI, link);
                         
-                        HtmlDocument tmep_doc = web.Load(absoluteUrl);
+            //             HtmlDocument tmep_doc = web.Load(absoluteUrl);
 
-                        foreach (HtmlNode linkNode in tmep_doc.DocumentNode.SelectNodes("//a[@href]"))
-                        {
-                            string templink = WebUtility.HtmlDecode(linkNode.GetAttributeValue("href", ""));
+            //             foreach (HtmlNode linkNode in tmep_doc.DocumentNode.SelectNodes("//a[@href]"))
+            //             {
+            //                 string templink = WebUtility.HtmlDecode(linkNode.GetAttributeValue("href", ""));
 
-                            Console.WriteLine($"templink>>>> {templink}");
+            //                 Console.WriteLine($"templink>>>> {templink}");
 
-                            temp_links.Add(templink);
-                        }
-                    }
-                }
-            } catch (Exception ex) {
-                Console.WriteLine($"Error is occured: {ex.Message}");
-            }
+            //                 temp_links.Add(templink);
+            //             }
+            //         }
+            //     }
+            // } catch (Exception ex) {
+            //     Console.WriteLine($"Error is occured: {ex.Message}");
+            // }
 
 
             result_links = links.Concat(temp_links).ToList();

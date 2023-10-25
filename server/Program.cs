@@ -13,35 +13,6 @@ namespace server
     {
         public static void Main(string[] args)
         {
-            // Start Socket.IO server
-            // var socketServer = new SocketIOServer(new SocketIOServerOption(9001));
-            // Console.WriteLine("Listening on port " + socketServer.Option.Port);
-
-            // socketServer.OnConnection((socket) =>
-            // {
-            //     Console.WriteLine("Client connected!");
-
-            //     socket.On("get_backlink", (data) =>
-            //     {
-            //         Console.WriteLine("testtesttest>>>>>");
-            //         foreach (JToken token in data)
-            //         {
-            //             Console.Write(token + " ");
-            //         }
-
-            //         Console.WriteLine("params>>> " + data.ToString());
-            //         socket.Emit("links", data.ToString());
-            //     });
-
-            //     socket.On(SocketIOEvent.DISCONNECT, () =>
-            //     {
-            //         Console.WriteLine("Client disconnected!");
-            //     });
-            // });
-
-            // socketServer.Start();
-
-            // Start ASP.NET Core application
             var host = Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
