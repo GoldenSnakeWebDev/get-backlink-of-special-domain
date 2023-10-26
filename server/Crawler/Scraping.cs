@@ -77,9 +77,11 @@ public class LinkScraping {
             {
                 string link = WebUtility.HtmlDecode(linkNode.GetAttributeValue("href", ""));
 
-                if (!Check_relative_url(link)) {
+                if(Check_relative_url(link)) {
+                    links.Add(Make_absolute_url(URI ?? "", link));
+                } else {
 
-                    links.Add(PickDomainFromURL(link));
+                    links.Add(link);
                 }
 
             }
@@ -88,34 +90,39 @@ public class LinkScraping {
 
             var temp_links = new List<string>();
 
-            try {
+            // try {
 
-                foreach (string link in links) {
-                    if (Check_relative_url(link)) {
+            //     foreach (string link in links) {
+            //         if (Check_relative_url(link)) {
 
-                        if(link.Contains(".html")) {
+            //             if(link.Contains(".html")) {
 
-                            string absoluteUrl = Make_absolute_url(URI, link);
+            //                 string absoluteUrl = Make_absolute_url(URI ?? "", link);
                             
-                            HtmlDocument tmep_doc = web.Load(absoluteUrl);
+            //                 HtmlDocument tmep_doc = web.Load(absoluteUrl);
 
-                            foreach (HtmlNode linkNode in tmep_doc.DocumentNode.SelectNodes("//a[@href]"))
-                            {
-                                string templink = WebUtility.HtmlDecode(linkNode.GetAttributeValue("href", ""));
+            //                 foreach (HtmlNode linkNode in tmep_doc.DocumentNode.SelectNodes("//a[@href]"))
+            //                 {
+            //                     string templink = WebUtility.HtmlDecode(linkNode.GetAttributeValue("href", ""));
 
-                                Console.WriteLine($"templink>>>> {templink}");
+            //                     if (!Check_relative_url(templink)) {
 
-                                temp_links.Add(templink);
-                            }
-                        }
-                    }
-                }
-            } catch (Exception ex) {
-                Console.WriteLine($"Error is occured: {ex.Message}");
-            }
+            //                         Console.WriteLine($"templink>>>> {templink}");
+
+            //                         temp_links.Add(PickDomainFromURL(templink));
+            //                     }
+            //                 }
+            //             }
+            //         } else {
+            //             temp_links.Add(PickDomainFromURL(link));
+            //         }
+            //     }
+            // } catch (Exception ex) {
+            //     Console.WriteLine($"Error is occured: {ex.Message}");
+            // }
 
 
-            result_links = links.Concat(temp_links).ToList();
+            result_links = links;
 
         }
         catch (Exception ex)
@@ -131,6 +138,7 @@ public class LinkScraping {
 
     public async void Save_link(List<string> links, string domain) {
 
+
         DateTime current_time = DateTime.Now;
 
         using var connection = new MySqlConnection("server=localhost;userid=root;password=;database=backlink");
@@ -139,26 +147,34 @@ public class LinkScraping {
 
         Console.WriteLine("save okay?");
 
-        var index = 0;
-
         foreach (var link in links) {
 
-            using MySqlCommand command3 = new MySqlCommand($"INSERT INTO links (domain, link, created_time) VALUES(@domain, @backlink, @created_time)", connection);
+            Console.WriteLine($"link to save>>> {link}");
 
-            command3.Parameters.AddWithValue("@domain", domain);
-            command3.Parameters.AddWithValue("@backlink", link);
-            command3.Parameters.AddWithValue("@created_time", current_time);
+            MySqlCommand command = new MySqlCommand($"SELECT COUNT(*) FROM links WHERE domain = @domain and link = @link", connection);
+            command.Parameters.AddWithValue("@link", PickDomainFromURL(link));
+            command.Parameters.AddWithValue("@domain", domain);
 
-            command3.ExecuteNonQuery();
+            int count = Convert.ToInt32(command.ExecuteScalar());
 
-            index ++;
+            if (count == 0) {
+
+                using MySqlCommand command3 = new MySqlCommand($"INSERT INTO links (domain, link, created_time) VALUES(@domain, @backlink, @created_time)", connection);
+
+                command3.Parameters.AddWithValue("@domain", domain);
+                command3.Parameters.AddWithValue("@backlink", PickDomainFromURL(link));
+                command3.Parameters.AddWithValue("@created_time", current_time);
+
+                command3.ExecuteNonQuery();
+            }
+
         }
 
         await connection.CloseAsync();
         
     }
 
-    public async Task<bool> Check_and_Save_on_DB(string domain, string link) {
+    public async Task<bool> Check_on_DB(string link) {
 
         DateTime current_time = DateTime.Now;
 
@@ -166,9 +182,10 @@ public class LinkScraping {
 
         connection.Open();
 
-        MySqlCommand command3 = new MySqlCommand($"SELECT COUNT(*) FROM links WHERE link = @link", connection);
+        MySqlCommand command3 = new MySqlCommand($"SELECT COUNT(*) FROM sublink WHERE sublink = @sublink", connection);
 
-        command3.Parameters.AddWithValue("@link", link);
+        command3.Parameters.AddWithValue("@sublink", link);
+
 
         // var reader =  command.ExecuteReader();
         int count = Convert.ToInt32(command3.ExecuteScalar());
@@ -179,11 +196,9 @@ public class LinkScraping {
             return true;
         }
         else {
-            command3 = new MySqlCommand($"INSERT INTO links (domain, link, created_time) VALUES(@domain, @backlink, @created_time)", connection);
-            command3.Parameters.AddWithValue("@domain", domain);
-            command3.Parameters.AddWithValue("@backlink", link);
-            command3.Parameters.AddWithValue("@created_time", current_time);
-            command3.ExecuteNonQuery();
+            MySqlCommand command = new MySqlCommand($"INSERT INTO sublink (sublink) VALUES(@sublink)", connection);
+            command.Parameters.AddWithValue("@sublink", link);
+            command.ExecuteNonQuery();
             await connection.CloseAsync();
 
             return false;

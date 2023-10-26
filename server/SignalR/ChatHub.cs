@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.SignalR;
+using MySql.Data.MySqlClient;
 using crawler;
 using scraping;
 
@@ -119,32 +120,45 @@ namespace SignalR
             // LinkCrawler crawler = new();
             // List<DateTime> date_time = new();
             ////////////////////////////////////////////
+
+            // using var connection = new MySqlConnection("server=localhost;userid=root;password=;database=backlink");
+            // connection.Open();
+
             List<string> link_lists =  new();
             LinkScraping scraper = new();
 
             link_lists = scraper.Get_Lists().ToList();
             HashSet<string> temp_linkToAdd = new();
 
-            do {
+            foreach (var link in link_lists) {
 
-                foreach (var link in link_lists) {
+                Console.WriteLine($"link>>>> {link}");
+                List<string> temp_links = scraper.get_outgoing_link(link);
+                scraper.Save_link(  temp_links, link);
 
-                    Console.WriteLine($"link>>>> {link}");
-                    List<string> temp_links = scraper.get_outgoing_link(link);
+                do {
                     foreach (var temp_link in temp_links) {
-                        if (!await scraper.Check_and_Save_on_DB(link, temp_link)) {
+                        List<string> temp_sublinks = scraper.get_outgoing_link(temp_link);
+                        scraper.Save_link(  temp_sublinks, link);
 
-                            Console.WriteLine($"add link>>>> {temp_link}");
-                            temp_linkToAdd.Add(temp_link);
+                        foreach (var temp_sublink in temp_sublinks) {
 
+                            if (!await scraper.Check_on_DB(temp_sublink)) {
+
+                                Console.WriteLine($"add link>>>> {temp_sublink}");
+                                temp_linkToAdd.Add(temp_sublink);
+
+                            }
                         }
+                    
                     }
-                }
 
-                link_lists = temp_linkToAdd.ToList();
-                temp_linkToAdd.Clear();
-            } while(link_lists.Count > 0);
+                    temp_links = temp_linkToAdd.ToList();
+                    temp_linkToAdd.Clear();
+                } while(temp_links.Count > 0);
+            }
 
+            // await connection.CloseAsync();
             await Clients.Caller.SendAsync("getting_end");
         }
     }
