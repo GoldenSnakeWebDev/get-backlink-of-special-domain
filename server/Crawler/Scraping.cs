@@ -161,7 +161,7 @@ public class LinkScraping {
 
                 using MySqlCommand command3 = new MySqlCommand($"INSERT INTO links (domain, link, created_time) VALUES(@domain, @backlink, @created_time)", connection);
 
-                command3.Parameters.AddWithValue("@domain", domain);
+                command3.Parameters.AddWithValue("@domain", PickDomainFromURL(domain));
                 command3.Parameters.AddWithValue("@backlink", PickDomainFromURL(link));
                 command3.Parameters.AddWithValue("@created_time", current_time);
 
@@ -233,6 +233,7 @@ public class LinkScraping {
 
         Console.WriteLine("make absolute url");
         Uri baseUri = new Uri(domain);
+        string rootDomain = $"{baseUri.scheme}://{baseUri.host}";
         Uri absoluteUri = new Uri(baseUri, relativeUrl);
         string absoluteUrl = absoluteUri.ToString();
 
@@ -276,6 +277,26 @@ public class LinkScraping {
         result["time"] = result_time;
 
         return result;
+    }
+
+    public List<string> Get_lists_for_crawling (int index) {
+        using var connection = new MySqlConnection("server=localhost;userid=root;password=;database=backlink");
+
+        connection.Open();
+
+        MySqlCommand command3 = new MySqlCommand($"SELECT sublink FROM sublink OFFSET @index LIMIT 100", connection);
+
+        command3.Parameters.AddWithValue("@index", index);
+        var reader =  command.ExecuteReader();
+
+        List<string> result_links = new();
+
+        while (reader.Read()) {
+            var link = reader.GetString(0);
+            result_links.Add(link);
+        }
+
+        return result_links;
     }
 
     public string[] Get_Lists() {

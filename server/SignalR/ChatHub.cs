@@ -130,6 +130,8 @@ namespace SignalR
             link_lists = scraper.Get_Lists().ToList();
             HashSet<string> temp_linkToAdd = new();
 
+            var index = 0;
+
             foreach (var link in link_lists) {
 
                 Console.WriteLine($"link>>>> {link}");
@@ -146,15 +148,17 @@ namespace SignalR
                             if (!await scraper.Check_on_DB(temp_sublink)) {
 
                                 Console.WriteLine($"add link>>>> {temp_sublink}");
-                                temp_linkToAdd.Add(temp_sublink);
+                                // temp_linkToAdd.Add(temp_sublink);
 
                             }
                         }
                     
                     }
 
-                    temp_links = temp_linkToAdd.ToList();
-                    temp_linkToAdd.Clear();
+                    temp_links = crawler.Get_lists_for_crawling(index);
+                    index += temp_links.Count;                    
+                    // temp_links = temp_linkToAdd.ToList();
+                    // temp_linkToAdd.Clear();
                 } while(temp_links.Count > 0);
             }
 
